@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.3.0
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: q98#946,nFwC$~Oxhc@
+      MYSQL_DATABASE: hurlingstat_db
+      MYSQL_USER: django
+      MYSQL_PASSWORD: q98#946,nFwC$~Oxhc@
+    #ports:
+    #  - "3306:3306"  # Optional: Expose MySQL to the host machine on port 3306
+
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql://django:q98#946,nFwC$~Oxhc@@db/hurlingstat_db
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  mysql_data:
