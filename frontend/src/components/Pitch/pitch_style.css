@@ -1,0 +1,200 @@
+.pitch {
+    background-color: #64976c;
+    height: 416px;
+    width: 752px;
+}
+
+.pitch .overlap-group {
+    height: 392px;
+    left: 14px;
+    position: relative;
+    top: 16px;
+    width: 724px;
+}
+
+.pitch .rectangle {
+    height: 392px;
+    left: 10px;
+    position: absolute;
+    top: 0;
+    width: 704px;
+}
+
+.pitch .line {
+    height: 383px;
+    left: 326px;
+    position: absolute;
+    top: 1px;
+    width: 2px;
+}
+
+.pitch .img {
+    height: 383px;
+    left: 397px;
+    position: absolute;
+    top: 1px;
+    width: 2px;
+}
+
+.pitch .line-2 {
+    height: 383px;
+    left: 648px;
+    position: absolute;
+    top: 1px;
+    width: 2px;
+}
+
+.pitch .line-3 {
+    height: 383px;
+    left: 613px;
+    position: absolute;
+    top: 0;
+    width: 2px;
+}
+
+.pitch .line-4 {
+    height: 384px;
+    left: 74px;
+    position: absolute;
+    top: 0;
+    width: 2px;
+}
+
+.pitch .div {
+    background-color: #d9d9d9;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    border-color: #000000;
+    border-right-style: solid;
+    border-right-width: 2px;
+    border-top-style: solid;
+    border-top-width: 2px;
+    height: 35px;
+    left: 708px;
+    position: absolute;
+    top: 175px;
+    width: 16px;
+}
+
+.pitch .rectangle-2 {
+    border: 2px solid;
+    border-color: #ffffff;
+    height: 91px;
+    left: 648px;
+    position: absolute;
+    top: 146px;
+    width: 62px;
+}
+
+.pitch .rectangle-3 {
+    border: 2px solid;
+    border-color: #ffffff;
+    height: 67px;
+    left: 688px;
+    position: absolute;
+    top: 158px;
+    width: 22px;
+}
+
+.pitch .ellipse {
+    background-color: #ffffff;
+    border: 5px solid;
+    border-radius: 2px;
+    height: 4px;
+    left: 660px;
+    position: absolute;
+    top: 190px;
+    width: 4px;
+}
+
+.pitch .rectangle-4 {
+    border: 2px solid;
+    border-color: #ffffff;
+    height: 91px;
+    left: 14px;
+    position: absolute;
+    top: 146px;
+    width: 62px;
+}
+
+.pitch .rectangle-5 {
+    border: 2px solid;
+    border-color: #ffffff;
+    height: 67px;
+    left: 14px;
+    position: absolute;
+    top: 158px;
+    width: 22px;
+}
+
+.pitch .ellipse-2 {
+    height: 4px;
+    left: 60px;
+    position: absolute;
+    top: 190px;
+    width: 4px;
+}
+
+.pitch .rectangle-6 {
+    background-color: #d9d9d9;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    border-color: #000000;
+    border-left-style: solid;
+    border-left-width: 2px;
+    border-top-style: solid;
+    border-top-width: 2px;
+    height: 35px;
+    left: 0;
+    position: absolute;
+    top: 174px;
+    width: 16px;
+}
+
+.pitch .ellipse-3 {
+    height: 134px;
+    left: 548px;
+    position: absolute;
+    top: 130px;
+    width: 72px;
+}
+
+.pitch .line-5 {
+    height: 384px;
+    left: 108px;
+    position: absolute;
+    top: 0;
+    width: 2px;
+}
+
+.pitch .ellipse-4 {
+    height: 134px;
+    left: 105px;
+    position: absolute;
+    top: 130px;
+    width: 71px;
+}
+
+.haze {
+    filter: blur(2px); 
+}
+
+
+.action-buttons-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+  
+.flex-grow-button {
+    flex-grow: 1;
+    margin: 0; /* Removing any default margin */
+    display: flex;
+    align-items: center; /* This will vertically center the text inside the button */
+    justify-content: center; /* This will horizontally center the text */
+}
+
+.blur-effect {
+    filter: blur(4px);
+  }
