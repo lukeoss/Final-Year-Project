@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, countdown }) {
   const commonStyles = { margin: '10px', padding: '5px', textAlign: 'center' };
@@ -6,7 +7,7 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
   if (isPendingDelete) {
     return (
       <div key={event.id} style={{ ...commonStyles, backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <button onClick={() => onUndo(event.id)} style={{ marginRight: '10px' }}>Undo</button>
+        <Button variant="primary" className="my-1" onClick={() => onUndo(event.id)} style={{ marginRight: '10px' }}>Undo</Button>
         <div style={{ backgroundColor: '#d9edf7', color: '#31708f', padding: '5px', borderRadius: '5px' }}>
           {countdown}s
         </div>
@@ -17,8 +18,9 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
   return (
     <div key={event.id} style={{ ...commonStyles, backgroundColor: event.flagged ? 'yellow' : 'transparent' }}>
       <p>{event.message}</p>
-      <button onClick={() => onFlag(event.id)}>Flag</button>
-      <button onClick={() => onDelete(event.id)}>Delete</button>
+      <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onFlag(event.id)}>Flag</Button>
+      <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onDelete(event.id)}>Delete</Button>
+      <Button variant="primary" className="my-1" >Edit</Button>
     </div>
   );
 }

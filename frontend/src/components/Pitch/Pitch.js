@@ -7,28 +7,28 @@ import blockIcon from './block_icon.png';
 import foulIcon from './foul_icon.png';
 import ModalComponent from '../Modal/Modal';
 
-export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markersToRemove, clearMarkersToRemove }) => {
-  const [markers, setMarkers] = useState([]);
+export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [temporaryMarker, setTemporaryMarker] = useState(null); // For immediate visual feedback
 
   const handlePitchClick = (event) => {
-      if (!isClickable || isModalOpen) return;
+    if (!isClickable || isModalOpen) return;
 
-      const bounds = event.currentTarget.getBoundingClientRect();
-      const x = event.clientX - bounds.left;
-      const y = event.clientY - bounds.top;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
 
-      const newMarker = { x, y, action: selectedAction }; // Include action directly here
-      setMarkers((prevMarkers) => [...prevMarkers, newMarker]); // Add the marker directly to the list
-      setIsModalOpen(true);
+    const tempMarker = { x, y, action: selectedAction, id: Date.now() }; // Use current timestamp as temporary ID
+    setTemporaryMarker(tempMarker);
+    setIsModalOpen(true);
   };
 
-  const handleActionSelected = (playerNumber) => {
-      setIsModalOpen(false);
-
-      if (typeof onMarkerPlaced === 'function') {
-        onMarkerPlaced(selectedAction, playerNumber);
-      }
+  const handleModalClose = (playerNumber) => {
+    if (temporaryMarker) {
+      onMarkerPlaced(selectedAction, playerNumber, temporaryMarker);
+    }
+    setIsModalOpen(false);
+    setTemporaryMarker(null);
   };
 
   const getMarkerIcon = (action) => {
@@ -51,20 +51,20 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markersToRe
   return (
     <div className="Pitch" onClick={handlePitchClick} style={{ position: 'relative' }}>
       <img src={pitchImage} alt="Pitch" style={{ maxWidth: '100%', height: 'auto' }} />
-        {markers.map((marker, index) => (
-          <div
-            key={index}
-            style={{
-              position: 'absolute',
-              left: `${marker.x}px`,
-              top: `${marker.y}px`,
-              transform: 'translate(-50%, -50%)',
-            }}
-          >
-            <img src={getMarkerIcon(marker.action)} alt={marker.action} style={{ width: '3vw', height: '3vw' }} />
-          </div>
-        ))}
-        {isModalOpen && <ModalComponent onActionSelected={handleActionSelected} />}
+      {markers.concat(temporaryMarker ? [temporaryMarker] : []).map((marker) => (
+        <img key={marker.id}
+             src={getMarkerIcon(marker.action)}
+             alt={marker.action}
+             style={{
+               position: 'absolute',
+               left: `${marker.x}px`,
+               top: `${marker.y}px`,
+               transform: 'translate(-50%, -50%)',
+               width: '3vw',
+               height: '3vw'
+             }} />
+      ))}
+      {isModalOpen && <ModalComponent onActionSelected={handleModalClose} />}
     </div>
   );
 };
