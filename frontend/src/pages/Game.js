@@ -10,8 +10,6 @@ function Game() {
   const [blurActive, setBlurActive] = useState(false);
   const [events, setEvents] = useState([]);
   const [pendingDeletes, setPendingDeletes] = useState([]);
-  const [markersToRemove, setMarkersToRemove] = useState([]);
-
 
   const handleActionSelection = (actionType) => {
     setSelectedAction(actionType);
@@ -73,7 +71,6 @@ function Game() {
   const finalizeDelete = (id) => {
     setEvents(prev => prev.filter(event => event.id !== id));
     setPendingDeletes(prev => prev.filter(pd => pd.id !== id));
-    setMarkersToRemove(prev => [...prev, id]);
   };
 
   useEffect(() => {
@@ -92,13 +89,7 @@ function Game() {
         </Col>
 
         <Col md={7} className="d-flex justify-content-center p-2">
-          <Pitch 
-          onMarkerPlaced={handleMarkerPlacement}
-          isClickable={isPitchClickable} 
-          selectedAction={selectedAction} 
-          markersToRemove={markersToRemove}
-          clearMarkersToRemove={() => setMarkersToRemove([])}
-          />
+          <Pitch onMarkerPlaced={handleMarkerPlacement} isClickable={isPitchClickable} selectedAction={selectedAction} />
         </Col>
 
         <Col md={3} className={`d-flex flex-column align-items-center p-2 ${blurActive ? 'blur-effect' : ''}`}>

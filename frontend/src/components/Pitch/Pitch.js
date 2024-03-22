@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import pitchImage from './Pitch_image.png';
 import goalIcon from './goal_icon.png';
 import pointIcon from './point_icon.png';
@@ -47,13 +47,6 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markersToRe
         return missIcon;
     }
   };
-
-  useEffect(() => {
-    if (markersToRemove.length > 0) {
-      setMarkers(currentMarkers => currentMarkers.filter(marker => !markersToRemove.includes(marker.id)));
-      clearMarkersToRemove();
-    }
-  }, [markersToRemove, clearMarkersToRemove]);
 
   return (
     <div className="Pitch" onClick={handlePitchClick} style={{ position: 'relative' }}>
