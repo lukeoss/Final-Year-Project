@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import pitchImage from './Pitch_image.png';
 import goalIcon from './goal_icon.png';
 import pointIcon from './point_icon.png';
@@ -7,7 +7,7 @@ import blockIcon from './block_icon.png';
 import foulIcon from './foul_icon.png';
 import ModalComponent from '../Modal/Modal';
 
-export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction }) => {
+export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markersToRemove, clearMarkersToRemove }) => {
   const [markers, setMarkers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,7 +27,7 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction }) => {
       setIsModalOpen(false);
 
       if (typeof onMarkerPlaced === 'function') {
-          onMarkerPlaced();
+        onMarkerPlaced(selectedAction, playerNumber);
       }
   };
 
@@ -47,6 +47,13 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction }) => {
         return missIcon;
     }
   };
+
+  useEffect(() => {
+    if (markersToRemove.length > 0) {
+      setMarkers(currentMarkers => currentMarkers.filter(marker => !markersToRemove.includes(marker.id)));
+      clearMarkersToRemove();
+    }
+  }, [markersToRemove, clearMarkersToRemove]);
 
   return (
     <div className="Pitch" onClick={handlePitchClick} style={{ position: 'relative' }}>

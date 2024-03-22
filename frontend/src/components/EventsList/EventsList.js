@@ -1,36 +1,47 @@
 import React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import ListItemText from '@mui/material/ListItemText';
-import IconButton from '@mui/material/IconButton';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import FolderIcon from '@mui/icons-material/Folder';
 
-const EventsList = () => {
+function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, countdown }) {
+  const commonStyles = { margin: '10px', padding: '5px', textAlign: 'center' };
+
+  if (isPendingDelete) {
+    return (
+      <div key={event.id} style={{ ...commonStyles, backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <button onClick={() => onUndo(event.id)} style={{ marginRight: '10px' }}>Undo</button>
+        <div style={{ backgroundColor: '#d9edf7', color: '#31708f', padding: '5px', borderRadius: '5px' }}>
+          {countdown}s
+        </div>
+      </div>
+    );
+  }
+
   return (
-    // <List dense>
-    //   {[0, 1, 2].map(value => (
-    //     <ListItem
-    //       key={value}
-    //       secondaryAction={
-    //         <IconButton edge="end" aria-label="delete">
-    //           <DeleteIcon />
-    //         </IconButton>
-    //       }
-    //     >
-    //       <ListItemAvatar>
-    //         <Avatar>
-    //           <FolderIcon />
-    //         </Avatar>
-    //       </ListItemAvatar>
-    //       <ListItemText primary="Event Item" secondary="Details" />
-    //     </ListItem>
-    //   ))}
-    // </List>
-    <p>soup</p>
+    <div key={event.id} style={{ ...commonStyles, backgroundColor: event.flagged ? 'yellow' : 'transparent' }}>
+      <p>{event.message}</p>
+      <button onClick={() => onFlag(event.id)}>Flag</button>
+      <button onClick={() => onDelete(event.id)}>Delete</button>
+    </div>
   );
-};
+}
+
+function EventsList({ events, onFlag, onDelete, onUndo, pendingDeletes }) {
+  return (
+    <div style={{ maxHeight: '500px', overflowY: 'auto', position: 'relative' }}>
+      {events.map((event) => {
+        const pendingDelete = pendingDeletes.find(pd => pd.id === event.id);
+        return (
+          <EventsListItem
+            key={event.id}
+            event={event}
+            onFlag={onFlag}
+            onDelete={onDelete}
+            onUndo={onUndo}
+            isPendingDelete={!!pendingDelete}
+            countdown={pendingDelete?.countdown}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 export default EventsList;
