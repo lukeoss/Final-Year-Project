@@ -15,7 +15,7 @@ function Copyright(props) {
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
         <Link color="inherit" href="#">
-          Hurling Stat
+          GAA Stat
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}
@@ -48,11 +48,11 @@ export default function Home() {
               color="text.primary"
               gutterBottom
             >
-              Hurling Stat
+              GAA Stat
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Hurling Stat is a statistics tracking web application design to allow its users to 
-              effortlessly keep track of, and record what happens in an intense game of hurling
+              GAA Stat is a statistics tracking web application design to allow its users to 
+              effortlessly keep track of, and record what happens in an intense game of gaelic, hurling or camogie.
             </Typography>
             <Stack
               sx={{ pt: 4 }}

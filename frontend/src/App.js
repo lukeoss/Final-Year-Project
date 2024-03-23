@@ -19,7 +19,7 @@ function App() {
       <Container fluid className="p-0">
         <Navbar bg="dark" variant="dark" expand="lg">
           <Container>
-            <Navbar.Brand as={Link} to="/">Hurling Stat</Navbar.Brand>
+            <Navbar.Brand as={Link} to="/">GAA Stat</Navbar.Brand>
             <Nav className="ms-auto">
               <Nav.Link as={Link} to="/">Home</Nav.Link>
               <Nav.Link as={Link} to="/game">Game</Nav.Link>
