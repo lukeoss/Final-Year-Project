@@ -60,8 +60,7 @@ export default function Home() {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" class="glow-on-hover" type='button' // Might remove this styling
-                component={RouterLink} 
+              <Button variant="contained" component={RouterLink} 
                 to="/create-account">Create An Account
               </Button>
 

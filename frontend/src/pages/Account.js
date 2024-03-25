@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Outlet, useNavigate } from 'react-router-dom';
+// import { Route, Outlet, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import { Dropdown } from 'react-bootstrap';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./Account.css";
@@ -34,8 +36,8 @@ const Account = () => {
 
         <div className="d-sm-flex align-items-center justify-content-between mb-4" style={{ paddingTop: '15px' }}>
                         <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                className="fas fa-download fa-sm text-white-50"></i> Download Statistics </a>
+                        <Link href="#" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                className="fas fa-download fa-sm text-white-50"></i> Download Statistics </Link>
                     </div>
 
         <div className="row">
