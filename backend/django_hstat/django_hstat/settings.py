@@ -55,10 +55,15 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:3000', # or the reactjs address being used
+)
 
 
 ROOT_URLCONF = 'django_hstat.urls'
@@ -91,7 +96,7 @@ DATABASES = {
         'NAME': 'hurlingstat_db',
         'USER': 'django',
         'PASSWORD': 'q98#946,nFwC$~Oxhc@',  # Your actual password
-        'HOST': 'db',  # Docker service name as host
+        'HOST': 'localhost',  # Docker service name as host
         'PORT': '3306',  # Default MySQL port
     }
 }

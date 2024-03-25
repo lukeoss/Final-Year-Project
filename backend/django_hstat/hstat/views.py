@@ -1,22 +1,25 @@
+# views.py
 from django.shortcuts import render
-from django.http import JsonResponse
-from django.http import HttpResponse
-
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-
-# from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-
+from .serializers import TeamSerializer
 import json
 
+from .models import Team, Player
+from .serializers import TeamSerializer, PlayerSerializer
 
+class TeamViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    
 def hello(request):
     return HttpResponse("Hello, World!")
 

@@ -1,44 +1,92 @@
 import React, { useState, useEffect } from "react";
-// import { Route, Outlet, useNavigate } from "react-router-dom";
-import {Link } from "react-router-dom";
-
-// import { Dropdown } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-// import Game from "./Game.js"
 import "./Additional.css";
 import "./Account.css";
 
+const apiBaseURL = 'http://localhost:8000/api/';
 
 const NewGame = () => {
 
-    const lastNames = [
-        null, // Placeholder
-        "Mohan", "Fallon", "Mac Suibhne", "Davin", "Desmond",
-        "McGuinness", "Ó hEaghra", "Daley", "Ó Maol Bhréanáin",
-        "Shannon", "Caden", "McAfee", "Ó Téacháin", "Ó Deoradháin", "McCracken",
-    ];
+    const [teams, setTeams] = useState([]);
+    const [players, setPlayers] = useState([]);
+    const [selectedTeamId, setSelectedTeamId] = useState(null);
+
+    const countPlayersInTeam = (teamId) => {
+        const team = teams.find(team => team.team_id === teamId);
+        return team ? team.players.length : 0;
+    };
+    
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`${apiBaseURL}teams/`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            setTeams(data);
+            const allPlayers = data.reduce((acc, team) => [...acc, ...team.players], []);
+            setPlayers(allPlayers);
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+            // Optionally handle error state here (e.g., set an error message state and display it)
+        }
+    };
+    
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const generateRows = () => {
+  
+        if (!selectedTeamId) {
+            return (
+                <div className="w-100 h-100 d-flex align-items-center justify-content-center"  
+                     style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
+                    Please select a team.
+                </div>
+            );
+        }
+    
+        // Filter to get players from the selected team.
+        console.log(players, selectedTeamId);
+        const selectedTeamPlayers = players.filter(player => player.player_team_id === selectedTeamId);
+
+        // const selectedTeamPlayers = players.filter(player => Number(player.player_team_id) === Number(selectedTeamId));
+
+        // Return null if no players are found for the selected team (optional handling).
+        if (!selectedTeamPlayers.length) return null;
+        
+        // Iterate over the rowStructures to create UI elements for each.
+        return rowStructures.map((row, rowIndex) => (
+            <div key={`row-${rowIndex}`} className="row justify-content-center" 
+                 style={{ marginBottom: '10px' }}>
+                {row.map(playerNumber => {
+
+                    const player = selectedTeamPlayers.find(player => player.player_number === playerNumber);
+    
+                    return (
+                        <div key={playerNumber} className="col-auto mb-2" 
+                             style={{ padding: '0 5px' }}>
+                            <div className="card" style={{ width: '100px' }}>
+                                <div className="card-body d-flex justify-content-center align-items-center" 
+                                     style={{ padding: '10px' }}>
+                                    <div className="text-center" style={{ fontSize: '0.8rem' }}>
+                                        {player ? player.player_last_name : 'N/A'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        ));
+    };
+    
 
     const rowStructures = [
         [1], [2, 3, 4], [5, 6, 7], [8, 9], [10, 11, 12], [13, 14, 15],
     ];
 
-    const generateRows = () => {
-        return rowStructures.map((row, rowIndex) => (
-            <div key={`row-${rowIndex}`} className="row justify-content-center" style={{ marginBottom: '10px' }}> {/* Spacing between rows */}
-                {row.map((nameIndex) => (
-                    <div key={nameIndex} className={`col-auto mb-2`} style={{ padding: '0 5px' }}> {/* 10px spacing between boxes below */}
-                        <div className="card" style={{ width: '100px' }}>
-                            <div className="card-body d-flex justify-content-center align-items-center" style={{ padding: '10px' }}> {/* Reduced vertical padding */}
-                                <div className="text-center" style={{ fontSize: '0.8rem' }}>
-                                    {lastNames[nameIndex]}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        ));
-    };
 
     return (
         <div className="container-fluid">
@@ -49,87 +97,37 @@ const NewGame = () => {
 
             <div className="row">
 
-                <div className="col-xl-6 col-lg-7">
-                    <div className="card shadow mb-4">
-
-                        <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <div className="col-xl-6 col-lg-7">
+                <div className="card shadow mb-4">
+                    <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 className="m-0 font-weight-bold text-primary">Select Team</h6>
-                        </div>
-
-                        
-
-                        <div className="card-body">
-                            
-                            <div className="col-xl-12 col-md-6 mb-4"> {/* Start Internal Card */}
+                    </div>
+                    <div className="card-body">
+                        {teams.map(team => (
+                            <div key={team.team_id} className="mb-4">
                                 <div className="card border-left shadow h-100 py-2">
                                     <div className="card-body">
                                         <div className="row no-gutters align-items-center">
-                                            <div className="col mr-2"  style={{ paddingLeft: '15px' }}>
-                                                <div className="h4 font-weight-bold text-warning text-camelcase mb-1">Junior Womens Camogie Team</div>
-                                                <div className="h5 mb-0 font-weight-bold text-gray-800">25 Players</div>
+                                            <div className="col" style={{ paddingLeft: '15px' }}>
+                                                <div className="h4 font-weight-bold text-primary text-camelcase mb-1">{team.team_name}</div>
+                                                <div className="h5 mb-0 font-weight-bold text-gray-800">{countPlayersInTeam(team.team_id)} Players</div>
                                             </div>
                                             <div className="col-auto" style={{ paddingRight: '15px' }}>
                                                 <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <Link to="#" className="btn btn-primary shadow-sm d-block text-white" style={{ width: '100%' }}>
-                                                        <i className="fas fa-hand-pointer fa-sm text-white-50"></i> Select
-                                                    </Link>
-                                                    <Link to="#" className="btn btn-primary shadow-sm d-block text-white" style={{ width: '100%' }}>
-                                                        <i className="fas fa-pen-to-square fa-sm text-white-50"></i> Edit
+                                                    <Link to="#" className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} style={{ width: '100%' }} onClick={() => setSelectedTeamId(team.team_id)}>
+                                                        <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
                                                     </Link>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>  {/* End Internal Card */}
-
-                            <div className="col-xl-12 col-md-6 mb-4"> {/* Start Internal Card */}
-                                <div className="card border-left shadow h-100 py-2">
-                                    <div className="card-body">
-                                        <div className="row no-gutters align-items-center">
-                                            <div className="col mr-2"  style={{ paddingLeft: '15px' }}>
-                                                <div className="h4 font-weight-bold text-primary text-camelcase mb-1">Junior Mens Hurling Team</div>
-                                                <div className="h5 mb-0 font-weight-bold text-gray-800">27 Players</div>
-                                            </div>
-                                            <div className="col-auto" style={{ paddingRight: '15px' }}>
-                                                <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <Link to="#" className="btn btn-primary shadow-sm d-block text-white" style={{ width: '100%' }}>
-                                                        <i className="fas fa-hand-pointer fa-sm text-white-50"></i> Select
-                                                    </Link>
-                                                    <Link to="#" className="btn btn-primary shadow-sm d-block text-white" style={{ width: '100%' }}>
-                                                        <i className="fas fa-pen-to-square fa-sm text-white-50"></i> Edit
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> {/* End Internal Card */}
-
-                            <div className="col-xl-12 col-md-6 mb-4"> {/* Start Internal Card */}
-                                <div className="card border-left shadow h-100 py-2">
-                                    <div className="card-body">
-                                        <div className="row no-gutters align-items-center">
-                                            <div className="col mr-2"  style={{ paddingLeft: '15px' }}>
-                                                <div className="h4 font-weight-bold text-success text-camelcase mb-1">Default Team</div>
-                                                <div className="h5 mb-0 font-weight-bold text-gray-800">25 Players ( Blank )</div>
-
-                                            </div>
-                                            <div className="col-auto" style={{ paddingRight: '15px' }}>
-                                                <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <Link to="#" className="btn btn-primary shadow-sm d-block text-white" style={{ width: '100%' }}>
-                                                        <i className="fas fa-hand-pointer fa-sm text-white-50"></i> Select
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> {/* End Internal Card */}
-
-                        </div> {/* End Card Body */}
-                    </div> {/* End Shadow Card */}
+                            </div>
+                        ))}
+                    </div>
                 </div>
+            </div>
+
 
 
                 <div className="col-xl-3 col-md-6 mb-4">
@@ -160,27 +158,18 @@ const NewGame = () => {
                 </div>
 
                 <div className="col-xl-3 col-md-6 mb-4">
-                    <div className="card border-left shadow h-100 py-2">
-                        <div className="card-body">
-                            {/* <div className="row no-gutters align-items-center">
-                                <div className="col mr-2"  style={{ paddingLeft: '15px' }}>
-                                    <div className="h5 font-weight-bold text-primary text-camelcase mb-1">
-                                        Start</div>
-                                </div>
-                                <div className="col-auto" style={{ paddingRight: '15px' }}>
-                                    <i className="fas fa-play fa-2x text-gray-300"></i>
-                                </div>
-                            </div> */}
-                            <div className="col-auto" style={{ paddingRight: '15px' }}>
-                                <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                    <Link to="/game" className="btn btn-primary shadow-sm d-block text-white" style={{ width: '100%' }}>
-                                        <i className="fas fa-sm text-white-50"></i> Start Game
-                                    </Link>
-                                </div>
+                <div className="card border-left shadow py-2">
+                    <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
+                        <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+                            <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
+                                <Link to="/game" className={`btn ${selectedTeamId ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`} style={{ width: '100%', height: '100%' }} onClick={(e) => selectedTeamId ? true : e.preventDefault()}>
+                                    Start Game
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
             </div> {/* End Row */}
 
