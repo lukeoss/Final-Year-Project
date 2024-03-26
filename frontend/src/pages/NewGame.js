@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useTeam } from '../components/TeamContext';
 import "./Additional.css";
 import "./Account.css";
 
@@ -8,6 +9,7 @@ const apiBaseURL = 'http://localhost:8000/api/';
 
 const NewGame = () => {
 
+    const { setTeam } = useTeam(); 
     const [teams, setTeams] = useState([]);
     const [players, setPlayers] = useState([]);
     const [selectedTeamId, setSelectedTeamId] = useState(null);
@@ -17,7 +19,12 @@ const NewGame = () => {
         return team ? team.players.length : 0;
     };
     
-
+    const handleTeamSelect = (teamId) => {
+        const team = teams.find(t => t.team_id === teamId);
+        setTeam(team);
+        setSelectedTeamId(teamId);
+    };
+      
     const fetchData = async () => {
         try {
             const response = await fetch(`${apiBaseURL}teams/`);
@@ -28,7 +35,6 @@ const NewGame = () => {
             setPlayers(allPlayers);
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
-            // Optionally handle error state here (e.g., set an error message state and display it)
         }
     };
     
@@ -46,17 +52,11 @@ const NewGame = () => {
                 </div>
             );
         }
-    
-        // Filter to get players from the selected team.
-        console.log(players, selectedTeamId);
+
         const selectedTeamPlayers = players.filter(player => player.player_team_id === selectedTeamId);
 
-        // const selectedTeamPlayers = players.filter(player => Number(player.player_team_id) === Number(selectedTeamId));
-
-        // Return null if no players are found for the selected team (optional handling).
         if (!selectedTeamPlayers.length) return null;
         
-        // Iterate over the rowStructures to create UI elements for each.
         return rowStructures.map((row, rowIndex) => (
             <div key={`row-${rowIndex}`} className="row justify-content-center" 
                  style={{ marginBottom: '10px' }}>
@@ -114,9 +114,9 @@ const NewGame = () => {
                                             </div>
                                             <div className="col-auto" style={{ paddingRight: '15px' }}>
                                                 <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <Link to="#" className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} style={{ width: '100%' }} onClick={() => setSelectedTeamId(team.team_id)}>
-                                                        <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
-                                                    </Link>
+                                                <Link className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} style={{ width: '100%' }} onClick={() => handleTeamSelect(team.team_id)}>
+                                                    <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
+                                                </Link>
                                                 </div>
                                             </div>
                                         </div>
@@ -146,7 +146,7 @@ const NewGame = () => {
                                     {generateRows()}
                                 </div>
 
-                                <div className="form-check mt-3 ml-2 custom-checkbox"> {/* Adjust margin-top as needed */}
+                                <div className="form-check mt-3 ml-2 custom-checkbox">
                                     <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
                                     <label className="form-check-label" htmlFor="flexCheckDefault">
                                         Advanced Mode
@@ -158,18 +158,20 @@ const NewGame = () => {
                 </div>
 
                 <div className="col-xl-3 col-md-6 mb-4">
-                <div className="card border-left shadow py-2">
-                    <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
-                        <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-                            <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
-                                <Link to="/game" className={`btn ${selectedTeamId ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`} style={{ width: '100%', height: '100%' }} onClick={(e) => selectedTeamId ? true : e.preventDefault()}>
-                                    Start Game
-                                </Link>
+                    <div className="card border-left shadow py-2">
+                        <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
+                            <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+                                <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
+                                <Link to={{ pathname: "/game", state: { selectedTeamId: selectedTeamId }
+                                    }} className={`btn ${selectedTeamId ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`} style={{ width: '100%', height: '100%' }} onClick={(e) => selectedTeamId ? null : e.preventDefault()}>
+                                        Start Game
+                                    </Link>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
             </div> {/* End Row */}
 

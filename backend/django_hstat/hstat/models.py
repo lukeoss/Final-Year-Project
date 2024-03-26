@@ -22,7 +22,7 @@ class Player(models.Model):
     player_first_name = models.CharField(max_length=100)
     player_last_name = models.CharField(max_length=100)
     player_number = models.IntegerField()
-    player_team_id = models.ForeignKey(Team, related_name='players', on_delete=models.CASCADE)
+    player_team = models.ForeignKey(Team, related_name='players', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.player_first_name} {self.player_last_name}"

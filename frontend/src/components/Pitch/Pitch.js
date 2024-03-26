@@ -7,9 +7,10 @@ import blockIcon from './block_icon.png';
 import foulIcon from './foul_icon.png';
 import ModalComponent from '../Modal/Modal';
 
-export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers }) => {
+// Assuming teamDetails or players are passed as a prop
+export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers, players }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [temporaryMarker, setTemporaryMarker] = useState(null); // For immediate visual feedback
+  const [temporaryMarker, setTemporaryMarker] = useState(null);
 
   const handlePitchClick = (event) => {
     if (!isClickable || isModalOpen) return;
@@ -17,8 +18,7 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers }) 
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
-
-    const tempMarker = { x, y, action: selectedAction, id: Date.now() }; // Use current timestamp as temporary ID
+    const tempMarker = { x, y, action: selectedAction, id: Date.now() };
     setTemporaryMarker(tempMarker);
     setIsModalOpen(true);
   };
@@ -33,18 +33,12 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers }) 
 
   const getMarkerIcon = (action) => {
     switch (action) {
-      case 'Goal':
-        return goalIcon;
-      case 'Point':
-        return pointIcon;
-      case 'Miss':
-        return missIcon;
-      case 'Block':
-        return blockIcon;
-      case 'Foul':
-        return foulIcon;
-      default:
-        return missIcon;
+      case 'Goal': return goalIcon;
+      case 'Point': return pointIcon;
+      case 'Miss': return missIcon;
+      case 'Block': return blockIcon;
+      case 'Foul': return foulIcon;
+      default: return missIcon;
     }
   };
 
@@ -64,7 +58,7 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers }) 
                height: '3vw'
              }} />
       ))}
-      {isModalOpen && <ModalComponent onActionSelected={handleModalClose} />}
+      {isModalOpen && <ModalComponent onActionSelected={handleModalClose} players={players} />}
     </div>
   );
 };

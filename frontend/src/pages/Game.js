@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useTeam } from '../components/TeamContext';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import EventsList from '../components/EventsList/EventsList';
 import Pitch from '../components/Pitch/Pitch';
 import '../components/Pitch/pitch_style.css';
 
 function Game() {
+  const { team } = useTeam(); // Using team from context
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedActionId, setSelectedActionId] = useState(null);
   const [isPitchClickable, setIsPitchClickable] = useState(false);
@@ -21,16 +24,18 @@ function Game() {
   };
 
   const handleMarkerPlacement = (action, playerNumber, markerPosition) => {
-    const newEvent = createEvent(action, playerNumber, selectedActionId, markerPosition);
+    // Use team.players directly from context
+    const player = team.players.find(p => p.player_number === playerNumber);
+    const newEvent = createEvent(action, player, selectedActionId, markerPosition);
     addEvent(newEvent);
     setIsPitchClickable(false);
     setBlurActive(false);
     setSelectedActionId(null);
   };
 
-  const createEvent = (action, playerNumber, eventId, markerPosition) => ({
+  const createEvent = (action, player, eventId, markerPosition) => ({
     id: eventId,
-    message: `${action} by Player ${playerNumber} at ${new Date().toLocaleTimeString()}`,
+    message: `${action} by ${player ? player.player_last_name : 'Unknown Player'} (${player ? player.player_number : 'N/A'}) at ${new Date().toLocaleTimeString()}`,
     timestamp: Date.now(),
     flagged: false,
     markerPosition,
@@ -114,9 +119,9 @@ function Game() {
             events={events}
             onFlag={toggleEventFlag}
             onDelete={initiateDeleteEvent}
-
             onUndo={undoDeleteEvent}
             pendingDeletes={pendingDeletes}
+            // players={players}
           />
         </Col>
       </Row>
