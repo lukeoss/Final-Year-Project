@@ -13,6 +13,7 @@ const NewGame = () => {
     const [teams, setTeams] = useState([]);
     const [players, setPlayers] = useState([]);
     const [selectedTeamId, setSelectedTeamId] = useState(null);
+    const [selectedDirection, setSelectedDirection] = useState('');
 
     const countPlayersInTeam = (teamId) => {
         const team = teams.find(team => team.team_id === teamId);
@@ -87,46 +88,53 @@ const NewGame = () => {
         [1], [2, 3, 4], [5, 6, 7], [8, 9], [10, 11, 12], [13, 14, 15],
     ];
 
+    const textColors = [
+        'text-primary', 'text-info', 'text-warning', 'text-danger'
+    ];
+
 
     return (
         <div className="container-fluid">
 
             <div className="d-sm-flex align-items-center justify-content-between mb-4" style={{ paddingTop: '15px' }}>
-                            <h1 className="h3 mb-0 text-gray-800">Start a Game</h1>
-                        </div>
+                <h1 className="h3 mb-0 text-gray-800">Start a Game</h1>
+            </div>
 
             <div className="row">
 
-            <div className="col-xl-6 col-lg-7">
-                <div className="card shadow mb-4">
-                    <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 className="m-0 font-weight-bold text-primary">Select Team</h6>
-                    </div>
-                    <div className="card-body">
-                        {teams.map(team => (
-                            <div key={team.team_id} className="mb-4">
-                                <div className="card border-left shadow h-100 py-2">
-                                    <div className="card-body">
-                                        <div className="row no-gutters align-items-center">
-                                            <div className="col" style={{ paddingLeft: '15px' }}>
-                                                <div className="h4 font-weight-bold text-primary text-camelcase mb-1">{team.team_name}</div>
-                                                <div className="h5 mb-0 font-weight-bold text-gray-800">{countPlayersInTeam(team.team_id)} Players</div>
-                                            </div>
-                                            <div className="col-auto" style={{ paddingRight: '15px' }}>
-                                                <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                <Link className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} style={{ width: '100%' }} onClick={() => handleTeamSelect(team.team_id)}>
-                                                    <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
-                                                </Link>
+                <div className="col-xl-6 col-lg-7">
+                    <div className="card shadow mb-4">
+                        <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 className="m-0 font-weight-bold text-primary">Select Team</h6>
+                        </div>
+
+                        <div className="card-body">
+                            {teams.map((team, index) => {
+                                const textColorClass = textColors[index % textColors.length];
+                                return (
+                                <div key={team.team_id} className="mb-4">
+                                    <div className="card border-left shadow h-100 py-2">
+                                        <div className="card-body">
+                                            <div className="row no-gutters align-items-center">
+                                                <div className="col" style={{ paddingLeft: '15px' }}>
+                                                    <div className={`h4 font-weight-bold ${textColorClass} text-camelcase mb-1`}>{team.team_name}</div>
+                                                    <div className="h5 mb-0 font-weight-bold text-gray-800">{countPlayersInTeam(team.team_id)} Players</div>
+                                                </div>
+                                                <div className="col-auto" style={{ paddingRight: '15px' }}>
+                                                    <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                    <Link className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} style={{ width: '100%' }} onClick={() => handleTeamSelect(team.team_id)}>
+                                                        <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
+                                                    </Link>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )})}
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
 
@@ -156,27 +164,75 @@ const NewGame = () => {
                         </div>
                     </div>
                 </div>
-
+                
                 <div className="col-xl-3 col-md-6 mb-4">
                     <div className="card border-left shadow py-2">
                         <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
                             <div className="w-100 h-100 d-flex align-items-center justify-content-center">
                                 <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
-                                <Link to={{ pathname: "/game", state: { selectedTeamId: selectedTeamId }
-                                    }} className={`btn ${selectedTeamId ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`} style={{ width: '100%', height: '100%' }} onClick={(e) => selectedTeamId ? null : e.preventDefault()}>
+                                    <Link to={selectedTeamId && selectedDirection ? { pathname: "/game", state: { selectedTeamId, selectedDirection } } : '#'}
+                                        className={`btn ${selectedTeamId && selectedDirection ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`}
+                                        style={{ width: '100%', height: '100%' }}
+                                        onClick={(e) => {
+                                            if (!selectedTeamId || !selectedDirection) {
+                                                e.preventDefault();
+                                            }
+                                        }}>
                                         Start Game
                                     </Link>
-
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="card border-left shadow py-2" style={{ marginTop: '15px' }}>
+                        <div className="card-body d-flex align-items-center justify-content-center">
+                            <div className="row no-gutters align-items-center">
+                                <div className="col mr-2" style={{ paddingLeft: '15px' }}>
+                                    <div className="h5 font-weight-bold text-success text-camelcase mb-1">
+                                        Shooting Direction
+                                    </div>
+                                </div>
+
+                                <div className="col-auto" style={{ paddingRight: '15px' }}>
+                                    <i className="fas fa-left-right fa-2x text-gray-300"></i>
+                                </div>
+
+                                <div className="w-100 h-100 d-flex align-items-center justify-content-center" style={{ marginTop: '15px' }}>
+
+                                    <div className="d-flex justify-content-around" style={{ gap: '15px' }}>
+
+                                        <Link to="#"
+                                            className={`btn shadow-sm d-block ${!selectedTeamId ? 'btn-secondary' : (selectedDirection === 'Left' ? 'btn-success' : 'btn-primary')} text-white`}
+                                            onClick={(e) => { e.preventDefault(); if (selectedTeamId) setSelectedDirection('Left');}}
+                                            style={{ pointerEvents: selectedTeamId ? 'auto' : 'none'}}>
+
+                                            <i className="fas fa-arrow-left text-white"></i> Left
+                                        </Link>
+
+                                        <Link to="#"
+                                            className={`btn shadow-sm d-block ${!selectedTeamId ? 'btn-secondary' : (selectedDirection === 'Right' ? 'btn-success' : 'btn-primary')} text-white`}
+                                            onClick={(e) => {e.preventDefault(); if (selectedTeamId) setSelectedDirection('Right'); }}
+                                            style={{ pointerEvents: selectedTeamId ? 'auto' : 'none' }}>
+
+                                            Right <i className="fas fa-arrow-right text-white"></i>
+                                        </Link>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+    </div>
+            
+            </div>
+
+
+                
 
             </div> {/* End Row */}
 
-        </div>
-            
+        </div>        
     );
 
 }

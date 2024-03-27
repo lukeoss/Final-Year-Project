@@ -1,3 +1,8 @@
+.btn-secondary, .btn[disabled] {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
 .custom-checkbox .form-check-input {
     border-color: #007bff;
 }

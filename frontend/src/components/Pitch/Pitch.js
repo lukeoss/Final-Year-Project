@@ -7,7 +7,6 @@ import blockIcon from './block_icon.png';
 import foulIcon from './foul_icon.png';
 import ModalComponent from '../Modal/Modal';
 
-// Assuming teamDetails or players are passed as a prop
 export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers, players }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [temporaryMarker, setTemporaryMarker] = useState(null);

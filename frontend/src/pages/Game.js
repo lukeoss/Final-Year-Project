@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTeam } from '../components/TeamContext';
-import { Container, Row, Col, Button } from 'react-bootstrap';
 import EventsList from '../components/EventsList/EventsList';
 import Pitch from '../components/Pitch/Pitch';
 import '../components/Pitch/pitch_style.css';
@@ -11,7 +9,7 @@ function Game() {
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedActionId, setSelectedActionId] = useState(null);
   const [isPitchClickable, setIsPitchClickable] = useState(false);
-  const [blurActive, setBlurActive] = useState(false);
+  // const [blurActive, setBlurActive] = useState(false);
   const [events, setEvents] = useState([]);
   const [pendingDeletes, setPendingDeletes] = useState([]);
 
@@ -20,16 +18,15 @@ function Game() {
     setSelectedAction(actionType);
     setSelectedActionId(actionId);
     setIsPitchClickable(true);
-    setBlurActive(true);
+    // setBlurActive(true);
   };
 
   const handleMarkerPlacement = (action, playerNumber, markerPosition) => {
-    // Use team.players directly from context
     const player = team.players.find(p => p.player_number === playerNumber);
     const newEvent = createEvent(action, player, selectedActionId, markerPosition);
     addEvent(newEvent);
     setIsPitchClickable(false);
-    setBlurActive(false);
+    // setBlurActive(false);
     setSelectedActionId(null);
   };
 
@@ -96,36 +93,69 @@ function Game() {
   }, [pendingDeletes]);
 
   return (
-    <Container fluid className="p-0">
-      <Row noGutters className="flex-nowrap">
-        <Col md={2} className={`d-flex flex-column align-items-center p-2 action-buttons-column ${blurActive ? 'blur-effect' : ''}`}>
-          {['Goal', 'Point', 'Miss', 'Block', 'Foul'].map(actionType => (
-            <Button key={actionType} variant="primary" className="my-1" onClick={() => handleActionSelection(actionType)}>
+    <div className="container-fluid p-0">
+    <div className="row flex-nowrap">
+  
+        <div className="col-md-2 p-2 action-buttons-column">
+
+          <div className="card h-100" style={{ marginLeft: '15px' }}>
+            <div className="card-body d-flex flex-column justify-content-around align-items-center" style={{ overflowX: 'hidden' }}>
+            {['Goal', 'Point', 'Miss', 'Block', 'Foul'].map(actionType => (
+              <button key={actionType} className="btn btn-primary my-1" style={{ minWidth: '100px' }} onClick={() => handleActionSelection(actionType)}>
               {actionType}
-            </Button>
-          ))}
-        </Col>
-        <Col md={7} className="d-flex justify-content-center p-2">
+              </button>
+            ))}
+            </div>
+          </div>
+
+          <div className="card h-100" style={{ marginTop: '15px', marginLeft: '15px' }}>
+            <div className="card-body d-flex flex-column justify-content-around align-items-center" style={{ overflowX: 'hidden' }}>
+            <h5>Shooting: Left</h5>
+            <button className="btn btn-primary my-1">
+            Swap Sides
+            </button>
+            </div>
+          </div>
+
+          <div className="card h-100" style={{ marginTop: '15px', marginLeft: '15px' }}>
+            <div className="card-body d-flex flex-column justify-content-around align-items-center" style={{ overflowX: 'hidden' }}>
+            <button className="btn btn-primary my-1">
+            Substitution
+            </button>
+            </div>
+          </div>
+
+        </div>
+
+
+      <div className="col-md-7 p-2">
           <Pitch 
             onMarkerPlaced={handleMarkerPlacement} 
             isClickable={isPitchClickable} 
             selectedAction={selectedAction} 
             selectedActionId={selectedActionId}
-            markers={events.map(event => ({...event.markerPosition, id: event.id}))}
+            markers={events.map(event => ({ ...event.markerPosition, id: event.id }))}
           />
-        </Col>
-        <Col md={3} className={`d-flex flex-column align-items-center p-2 ${blurActive ? 'blur-effect' : ''}`}>
-          <EventsList
-            events={events}
-            onFlag={toggleEventFlag}
-            onDelete={initiateDeleteEvent}
-            onUndo={undoDeleteEvent}
-            pendingDeletes={pendingDeletes}
-            // players={players}
-          />
-        </Col>
-      </Row>
-    </Container>
+      </div>
+  
+      <div className="col-md-3 p-2">
+        <div className="card h-100" style={{ overflowY: 'auto', marginRight: '15px'}}>
+          <div className="card-body d-flex flex-column align-items-center">
+            <EventsList
+              events={events}
+              onFlag={toggleEventFlag}
+              onDelete={initiateDeleteEvent}
+              onUndo={undoDeleteEvent}
+              pendingDeletes={pendingDeletes}
+            />
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  
+
   );
 }
 

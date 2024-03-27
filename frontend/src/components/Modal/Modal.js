@@ -40,12 +40,15 @@ const ModalComponent = ({ onActionSelected }) => {
   };
 
   return (
-    <div onClick={stopPropagation} className="modal-style">
-      <h2>Select a Player</h2>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {generateRows()}
+    // <React.Fragment>
+    //   <div className="modal-backdrop"></div>
+      <div onClick={stopPropagation} className="modal-style">
+        <h2>Select a Player</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {generateRows()}
+        </div>
       </div>
-    </div>
+    // </React.Fragment>
   );
 };
 
