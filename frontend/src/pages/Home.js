@@ -47,6 +47,7 @@ export default function Home() {
               align="center"
               color="text.primary"
               gutterBottom
+              className="brand-text"
             >
               GAA Stat
             </Typography>

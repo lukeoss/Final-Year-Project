@@ -22,7 +22,7 @@ function App() {
         <Container fluid className="p-0">
           <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
-              <Navbar.Brand as={Link} to="/">GAA Stat</Navbar.Brand>
+              <Navbar.Brand as={Link} to="/" className="brand-text">GAA Stat</Navbar.Brand>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="ms-auto">

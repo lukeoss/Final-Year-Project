@@ -27,3 +27,17 @@
 .card-spacing:last-child {
     margin-right: 0;
 }
+
+
+@font-face {
+    font-family: 'Facon';
+    src: url('../fonts/Facon.woff2') format('woff2'),
+         url('../fonts/Facon.woff') format('woff'),
+         url('../fonts/Facon.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.brand-text {
+    font-family: 'Facon', sans-serif !important; /* Fallback to sans-serif */
+}
