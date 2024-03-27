@@ -1,4 +1,3 @@
-// import React, { useState, useEffect } from 'react';
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { Container, Navbar, Nav } from 'react-bootstrap';
@@ -12,9 +11,9 @@ import Account from './pages/Account';
 import CreateAccount from './pages/CreateAccount';
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-// import ProtectedAccountRoute from './Pages/Account';
 
 function App() {
+  // State for tracking user authentication could be added here
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
@@ -25,27 +24,27 @@ function App() {
             <Container>
               <Navbar.Brand as={Link} to="/">GAA Stat</Navbar.Brand>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-              <Navbar.Collapse id="responsive-navbar-nav"> 
-              <Nav className="ms-auto">
-                <Nav.Link as={Link} to="/">Home</Nav.Link>
-                <Nav.Link as={Link} to="/newgame">Game</Nav.Link>
-                <Nav.Link as={Link} to="/teams">Teams</Nav.Link>
-                <Nav.Link as={Link} to="/account">My Account</Nav.Link>
-              </Nav>
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="ms-auto">
+                  <Nav.Link as={Link} to="/">Home</Nav.Link>
+                  <Nav.Link as={Link} to="/newgame">New Game</Nav.Link>
+                  <Nav.Link as={Link} to="/teams">Teams</Nav.Link>
+                  <Nav.Link as={Link} to="/account">My Account</Nav.Link>
+                </Nav>
               </Navbar.Collapse>
             </Container>
           </Navbar>
 
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/game" element={<Game />} />
-            <Route path="/newgame" element={<NewGame />} /> 
+            <Route path="/newgame" element={<NewGame />} />
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/login" element={<Login />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/account" element={<Account />} />
-            {/* Redirect any unknown paths to Home */}
-            <Route path="*" element={<Home />} />
+            {/* Placeholder for implementing protected routes or conditional rendering based on auth status */}
+            <Route path="*" element={<Home />} /> {/* Handles unknown paths */}
           </Routes>
         </Container>
       </Router>

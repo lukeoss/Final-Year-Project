@@ -5,20 +5,30 @@ import Pitch from '../components/Pitch/Pitch';
 import '../components/Pitch/pitch_style.css';
 
 function Game() {
-  const { team } = useTeam(); // Using team from context
+  const { team, selectedTeamId, selectedDirection } = useTeam();
+  console.log(selectedTeamId, selectedDirection);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedActionId, setSelectedActionId] = useState(null);
   const [isPitchClickable, setIsPitchClickable] = useState(false);
-  // const [blurActive, setBlurActive] = useState(false);
   const [events, setEvents] = useState([]);
   const [pendingDeletes, setPendingDeletes] = useState([]);
+
+  const [playDirection, setPlayDirection] = useState(selectedDirection);
+
+  const swapDirections = () => {
+    if (playDirection === "Left") {
+      setPlayDirection("Right")
+    }
+    else {
+      setPlayDirection("Left")
+    }
+  };
 
   const handleActionSelection = (actionType) => {
     const actionId = Date.now();
     setSelectedAction(actionType);
     setSelectedActionId(actionId);
     setIsPitchClickable(true);
-    // setBlurActive(true);
   };
 
   const handleMarkerPlacement = (action, playerNumber, markerPosition) => {
@@ -26,7 +36,6 @@ function Game() {
     const newEvent = createEvent(action, player, selectedActionId, markerPosition);
     addEvent(newEvent);
     setIsPitchClickable(false);
-    // setBlurActive(false);
     setSelectedActionId(null);
   };
 
@@ -43,9 +52,7 @@ function Game() {
   };
 
   const toggleEventFlag = (id) => {
-    setEvents(events => events.map(event => 
-      event.id === id ? { ...event, flagged: !event.flagged } : event
-    ));
+    setEvents(events.map(event => event.id === id ? { ...event, flagged: !event.flagged } : event));
   };
 
   const initiateDeleteEvent = (id) => {
@@ -110,8 +117,10 @@ function Game() {
 
           <div className="card h-100" style={{ marginTop: '15px', marginLeft: '15px' }}>
             <div className="card-body d-flex flex-column justify-content-around align-items-center" style={{ overflowX: 'hidden' }}>
-            <h5>Shooting: Left</h5>
-            <button className="btn btn-primary my-1">
+            <h5>Shooting: {playDirection}</h5>
+            <button className="btn btn-primary my-1"
+            onClick={() => swapDirections()}
+            >
             Swap Sides
             </button>
             </div>

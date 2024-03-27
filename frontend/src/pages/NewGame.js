@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTeam } from '../components/TeamContext';
+
 import "./Additional.css";
 import "./Account.css";
 
 const apiBaseURL = 'http://localhost:8000/api/';
 
 const NewGame = () => {
-
-    const { setTeam } = useTeam(); 
+    const { setTeam, selectedTeamId, setSelectedTeamId, selectedDirection, setSelectedDirection } = useTeam();
     const [teams, setTeams] = useState([]);
     const [players, setPlayers] = useState([]);
-    const [selectedTeamId, setSelectedTeamId] = useState(null);
-    const [selectedDirection, setSelectedDirection] = useState('');
+    const navigate = useNavigate();
 
     const countPlayersInTeam = (teamId) => {
         const team = teams.find(team => team.team_id === teamId);
@@ -42,6 +41,14 @@ const NewGame = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const startGame = () => {
+        if (selectedTeamId && selectedDirection) {
+            navigate("/game");
+        } else {
+            console.log("Cannot start the game. Make sure to select both a team and a direction.");
+        }
+    };
 
     const generateRows = () => {
   
@@ -122,9 +129,11 @@ const NewGame = () => {
                                                 </div>
                                                 <div className="col-auto" style={{ paddingRight: '15px' }}>
                                                     <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <Link className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} style={{ width: '100%' }} onClick={() => handleTeamSelect(team.team_id)}>
+                                                    <button className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} 
+                                                    style={{ width: '100%' }} 
+                                                    onClick={() => handleTeamSelect(team.team_id)}>
                                                         <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
-                                                    </Link>
+                                                    </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -170,16 +179,14 @@ const NewGame = () => {
                         <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
                             <div className="w-100 h-100 d-flex align-items-center justify-content-center">
                                 <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
-                                    <Link to={selectedTeamId && selectedDirection ? { pathname: "/game", state: { selectedTeamId, selectedDirection } } : '#'}
-                                        className={`btn ${selectedTeamId && selectedDirection ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`}
-                                        style={{ width: '100%', height: '100%' }}
-                                        onClick={(e) => {
-                                            if (!selectedTeamId || !selectedDirection) {
-                                                e.preventDefault();
-                                            }
-                                        }}>
-                                        Start Game
-                                    </Link>
+                                <button 
+                                    className={`btn ${selectedTeamId && selectedDirection ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`}
+                                    style={{ width: '100%', height: '100%' }}
+                                    onClick={startGame}
+                                    disabled={!selectedTeamId || !selectedDirection}
+                                >
+                                    Start Game
+                                </button>
                                 </div>
                             </div>
                         </div>
@@ -202,36 +209,31 @@ const NewGame = () => {
 
                                     <div className="d-flex justify-content-around" style={{ gap: '15px' }}>
 
-                                        <Link to="#"
+                                        <button
                                             className={`btn shadow-sm d-block ${!selectedTeamId ? 'btn-secondary' : (selectedDirection === 'Left' ? 'btn-success' : 'btn-primary')} text-white`}
-                                            onClick={(e) => { e.preventDefault(); if (selectedTeamId) setSelectedDirection('Left');}}
-                                            style={{ pointerEvents: selectedTeamId ? 'auto' : 'none'}}>
-
+                                            disabled={!selectedTeamId}
+                                            onClick={() => setSelectedDirection('Left')}
+                                        >
                                             <i className="fas fa-arrow-left text-white"></i> Left
-                                        </Link>
+                                        </button>
 
-                                        <Link to="#"
+                                        <button
                                             className={`btn shadow-sm d-block ${!selectedTeamId ? 'btn-secondary' : (selectedDirection === 'Right' ? 'btn-success' : 'btn-primary')} text-white`}
-                                            onClick={(e) => {e.preventDefault(); if (selectedTeamId) setSelectedDirection('Right'); }}
-                                            style={{ pointerEvents: selectedTeamId ? 'auto' : 'none' }}>
-
+                                            disabled={!selectedTeamId}
+                                            onClick={() => setSelectedDirection('Right')}
+                                        >
                                             Right <i className="fas fa-arrow-right text-white"></i>
-                                        </Link>
+                                        </button>
 
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-    </div>
-            
-            </div>
-
-
-                
+                    </div>
+                </div>
 
             </div> {/* End Row */}
-
         </div>        
     );
 
