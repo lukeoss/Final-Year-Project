@@ -6,12 +6,16 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
 
   if (isPendingDelete) {
     return (
-      <div key={event.id} style={{ ...commonStyles, backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Button variant="primary" className="my-1" onClick={() => onUndo(event.id)} style={{ marginRight: '10px' }}>Undo</Button>
-        <div style={{ backgroundColor: '#d9edf7', color: '#31708f', padding: '5px', borderRadius: '5px' }}>
-          {countdown}s
+      <div key={event.id} style={{ ...commonStyles, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Button variant="primary" className="my-1" onClick={() => onUndo(event.id)} style={{ marginRight: '10px' }}>Undo</Button>
+          <div style={{ backgroundColor: '#d9edf7', color: '#31708f', padding: '5px', borderRadius: '5px' }}>
+            {countdown}s
+          </div>
         </div>
+        <hr className="solid" style={{ width: '100%' }} />
       </div>
+
     );
   }
 
@@ -21,6 +25,7 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
       <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onFlag(event.id)}>Flag</Button>
       <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onDelete(event.id)}>Delete</Button>
       <Button variant="primary" className="my-1" >Edit</Button>
+      <hr class="solid"></hr>
     </div>
   );
 }

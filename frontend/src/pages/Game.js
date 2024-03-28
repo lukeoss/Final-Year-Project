@@ -149,6 +149,9 @@ function Game() {
   
       <div className="col-md-3 p-2">
         <div className="card h-100" style={{ overflowY: 'auto', marginRight: '15px'}}>
+        <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 className="m-0 font-weight-bold text-primary">Events</h6>
+                        </div>
           <div className="card-body d-flex flex-column align-items-center">
             <EventsList
               events={events}
