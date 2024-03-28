@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTeam } from '../components/TeamContext';
 import EventsList from '../components/EventsList/EventsList';
 import Pitch from '../components/Pitch/Pitch';
 import '../components/Pitch/pitch_style.css';
+import { createMatchEvent } from '../apiService';
 
 function Game() {
+  const location = useLocation();
+  const selectedMatchId = location.state?.matchId;
   const { team, selectedTeamId, selectedDirection } = useTeam();
-  console.log(selectedTeamId, selectedDirection);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedActionId, setSelectedActionId] = useState(null);
   const [isPitchClickable, setIsPitchClickable] = useState(false);
@@ -31,13 +34,44 @@ function Game() {
     setIsPitchClickable(true);
   };
 
-  const handleMarkerPlacement = (action, playerNumber, markerPosition) => {
+  const handleMarkerPlacement = async (action, { playerId, playerNumber }, markerPosition) => {
     const player = team.players.find(p => p.player_number === playerNumber);
     const newEvent = createEvent(action, player, selectedActionId, markerPosition);
     addEvent(newEvent);
+    
+    console.log(player.player_id, player.player_number); // This should log the player's ID
+
+    if (!player || !player.player_id) {
+      console.error("Player ID is undefined or player not found.");
+      return;
+    }
+  
+    const timeNow = new Date().toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit', // Optional: include if your backend expects seconds
+    });
+
+    try {
+      const savedEvent = await createMatchEvent({
+        event_type: action,
+        coord_x: markerPosition.x,
+        coord_y: markerPosition.y,
+        player: playerId,
+        time: timeNow,
+        play_direction: playDirection,
+        match: selectedMatchId,
+      });
+      console.log('Event saved successfully:', savedEvent);
+    } catch (error) {
+      console.error('Failed to save event:', error);
+    }
+  
     setIsPitchClickable(false);
     setSelectedActionId(null);
   };
+  
 
   const createEvent = (action, player, eventId, markerPosition) => ({
     id: eventId,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTeam } from '../components/TeamContext';
+import { createMatch } from '../apiService';
 
 import "./Additional.css";
 import "./Account.css";
@@ -42,13 +43,24 @@ const NewGame = () => {
         fetchData();
     }, []);
 
-    const startGame = () => {
+    const startGame = async () => {
         if (selectedTeamId && selectedDirection) {
-            navigate("/game");
+            try {
+                const home_team_id = selectedTeamId;
+                const away_team_id = selectedTeamId; // Placeholder for away team ID
+                const location = "Default Location";
+                const competition = "Regular Season";
+    
+                const match = await createMatch(home_team_id, away_team_id, location, competition);
+                navigate("/game", { state: { matchId: match.match_id } });
+            } catch (error) {
+                console.error("Failed to start game:", error);
+            }
         } else {
             console.log("Cannot start the game. Make sure to select both a team and a direction.");
         }
     };
+    
 
     const generateRows = () => {
   

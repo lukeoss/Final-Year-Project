@@ -13,8 +13,8 @@ from rest_framework import status
 from .serializers import TeamSerializer
 import json
 
-from .models import Team, Player
-from .serializers import TeamSerializer, PlayerSerializer
+from .models import Team, Player, Match, MatchEvent
+from .serializers import TeamSerializer, PlayerSerializer, MatchSerializer, MatchEventSerializer
 
 class TeamViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Team.objects.all()
@@ -93,3 +93,11 @@ def get_user_info(request):
 def logout_view(request):
     logout(request)
     return JsonResponse({"message": "Logged out successfully"})
+
+class MatchViewSet(viewsets.ModelViewSet):
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
+
+class MatchEventViewSet(viewsets.ModelViewSet):
+    queryset = MatchEvent.objects.all()
+    serializer_class = MatchEventSerializer

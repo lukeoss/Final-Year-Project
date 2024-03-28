@@ -24,7 +24,7 @@ const ModalComponent = ({ onActionSelected }) => {
           const player = team.players.find(p => p.player_number === number);
 
           return (
-            <div key={number} className="col-auto mb-2" style={{ padding: '0 5px' }} onClick={() => player && onActionSelected(player.player_number)}>
+            <div key={number} className="col-auto mb-2" style={{ padding: '0 5px' }} onClick={() => player && onActionSelected({ playerId: player.player_id, playerNumber: player.player_number })}>
               <div className="card clickable" style={{ width: '100px', cursor: 'pointer' }}>
                 <div className="card-body d-flex justify-content-center align-items-center" style={{ padding: '10px' }}>
                   <div className="text-center" style={{ fontSize: '0.8rem' }}>

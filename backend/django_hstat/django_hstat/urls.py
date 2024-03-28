@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from hstat import views
-from hstat.views import TeamViewSet
+from hstat.views import TeamViewSet, MatchViewSet, MatchEventViewSet
 from rest_framework.routers import DefaultRouter
 
 # Initialize the DefaultRouter
@@ -9,6 +9,8 @@ router = DefaultRouter()
 
 # Register the TeamViewSet with the router
 router.register(r'teams', TeamViewSet)
+router.register(r'matches', MatchViewSet)
+router.register(r'match-events', MatchEventViewSet)
 
 urlpatterns = [
     path('hello/', views.hello, name='hello'),
