@@ -1,4 +1,7 @@
+# views.py
 from django.shortcuts import render
+from django.db.models import Count, Case, When, IntegerField
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -9,6 +12,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Team, Player, Match, MatchEvent
+
 from .serializers import TeamSerializer, PlayerSerializer, MatchSerializer, MatchEventSerializer
 
 # Class-based
@@ -88,3 +92,58 @@ def logout_view(request):
     """Log out the current user."""
     logout(request)
     return JsonResponse({"message": "Logged out successfully"})
+
+@api_view(['GET'])
+def dashboard_data_view(request, numberoflatestgames=None):
+    # Filter matches if numberoflatestgames is specified
+    if numberoflatestgames:
+        latest_matches = Match.objects.order_by('-date')[:int(numberoflatestgames)]
+        match_ids = [match.match_id for match in latest_matches]
+        filtered_events_query = MatchEvent.objects.filter(match__match_id__in=match_ids)
+    else:
+        filtered_events_query = MatchEvent.objects.all()
+    
+    # Calculate stats for filtered events
+    filtered_event_counts = filtered_events_query.aggregate(
+        goals=Count(Case(When(event_type='goal', then=1), output_field=IntegerField())),
+        points=Count(Case(When(event_type='point', then=1), output_field=IntegerField())),
+        misses=Count(Case(When(event_type='miss', then=1), output_field=IntegerField())),
+        blocks=Count(Case(When(event_type='block', then=1), output_field=IntegerField())),
+    )
+
+    filtered_total_shots = filtered_event_counts['goals'] + filtered_event_counts['points'] + filtered_event_counts['misses']
+    filtered_games_count = latest_matches.count() if numberoflatestgames else Match.objects.count()
+    filtered_successful_shots_percentage = ((filtered_event_counts['goals'] + filtered_event_counts['points']) / filtered_total_shots * 100) if filtered_total_shots > 0 else 0
+
+    # Always calculate all-time stats
+    all_time_event_counts = MatchEvent.objects.aggregate(
+        goals=Count(Case(When(event_type='goal', then=1), output_field=IntegerField())),
+        points=Count(Case(When(event_type='point', then=1), output_field=IntegerField())),
+        misses=Count(Case(When(event_type='miss', then=1), output_field=IntegerField())),
+        blocks=Count(Case(When(event_type='block', then=1), output_field=IntegerField())),
+    )
+
+    all_time_total_shots = all_time_event_counts['goals'] + all_time_event_counts['points'] + all_time_event_counts['misses']
+    all_time_games_count = Match.objects.count()
+    all_time_successful_shots_percentage = ((all_time_event_counts['goals'] + all_time_event_counts['points']) / all_time_total_shots * 100) if all_time_total_shots > 0 else 0
+    
+    return Response({
+        'filtered': {
+            'goals': filtered_event_counts['goals'],
+            'points': filtered_event_counts['points'],
+            'misses': filtered_event_counts['misses'],
+            'total_shots': filtered_total_shots,
+            'games_recorded': filtered_games_count,
+            'successful_shots_percentage': filtered_successful_shots_percentage,
+            'blocks': filtered_event_counts['blocks'],
+        },
+        'all_time': {
+            'goals': all_time_event_counts['goals'],
+            'points': all_time_event_counts['points'],
+            'misses': all_time_event_counts['misses'],
+            'total_shots': all_time_total_shots,
+            'games_recorded': all_time_games_count,
+            'successful_shots_percentage': all_time_successful_shots_percentage,
+            'blocks': all_time_event_counts['blocks'],
+        }
+    })

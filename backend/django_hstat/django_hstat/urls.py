@@ -1,7 +1,8 @@
+# urls.py
 from django.contrib import admin
 from django.urls import path, include
 from hstat import views
-from hstat.views import TeamViewSet, MatchViewSet, MatchEventViewSet
+from hstat.views import *
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -23,5 +24,7 @@ urlpatterns = [
     path('api/user-info/', views.get_user_info, name='user_info'),
     
     # REST API URLs
-    path('api/', include(router.urls)),  # Including router URLs for API endpoints
+    path('api/', include(router.urls)),
+    path('api/dashboard-data/', views.dashboard_data_view, name='dashboard_data'),
+    path('api/dashboard-data/<int:numberoflatestgames>/', views.dashboard_data_view, name='dashboard_data_number'),
 ]
