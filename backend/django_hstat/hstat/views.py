@@ -95,13 +95,13 @@ def logout_view(request):
 
 @api_view(['GET'])
 def dashboard_data_view(request, numberoflatestgames=None):
-    # Filter matches if numberoflatestgames is specified
     if numberoflatestgames:
         latest_matches = Match.objects.order_by('-date')[:int(numberoflatestgames)]
-        match_ids = [match.match_id for match in latest_matches]
-        filtered_events_query = MatchEvent.objects.filter(match__match_id__in=match_ids)
     else:
-        filtered_events_query = MatchEvent.objects.all()
+        latest_matches = Match.objects.all()
+    
+    match_ids = [match.match_id for match in latest_matches]
+    filtered_events_query = MatchEvent.objects.filter(match_id__in=match_ids)
     
     # Calculate stats for filtered events
     filtered_event_counts = filtered_events_query.aggregate(

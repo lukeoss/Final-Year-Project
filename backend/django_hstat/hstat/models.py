@@ -34,7 +34,7 @@ class Player(models.Model):
 
 class Match(models.Model):
     match_id = models.AutoField(primary_key=True)
-    date = models.DateField()
+    date = models.DateTimeField()
     home_team = models.ForeignKey(Team, related_name='home_matches', on_delete=models.CASCADE)
     away_team = models.ForeignKey(Team, related_name='away_matches', on_delete=models.CASCADE)
     location = models.CharField(max_length=255)
