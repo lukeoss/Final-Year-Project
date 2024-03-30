@@ -4,7 +4,7 @@ import { useTeam } from '../components/TeamContext';
 import EventsList from '../components/EventsList/EventsList';
 import Pitch from '../components/Pitch/Pitch';
 import '../components/Pitch/pitch_style.css';
-import { createMatchEvent } from '../apiService';
+import { createMatchEvent, deleteMatchEventDB } from '../apiService';
 
 function Game() {
   const location = useLocation();
@@ -19,40 +19,29 @@ function Game() {
   const [playDirection, setPlayDirection] = useState(selectedDirection);
 
   const swapDirections = () => {
-    if (playDirection === "Left") {
-      setPlayDirection("Right")
-    }
-    else {
-      setPlayDirection("Left")
-    }
+    setPlayDirection(prevDirection => prevDirection === "Left" ? "Right" : "Left");
   };
 
   const handleActionSelection = (actionType) => {
-    const actionId = Date.now();
     setSelectedAction(actionType);
-    setSelectedActionId(actionId);
     setIsPitchClickable(true);
   };
 
   const handleMarkerPlacement = async (action, { playerId, playerNumber }, markerPosition) => {
     const player = team.players.find(p => p.player_number === playerNumber);
-    const newEvent = createEvent(action, player, selectedActionId, markerPosition);
-    addEvent(newEvent);
     
-    console.log(player.player_id, player.player_number); // This should log the player's ID
-
     if (!player || !player.player_id) {
       console.error("Player ID is undefined or player not found.");
       return;
     }
   
-    const timeNow = new Date().toLocaleTimeString('en-US', {
+    const timeNow = new Date().toLocaleTimeString('en-GB', {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit', // Optional: include if your backend expects seconds
+      second: '2-digit',
     });
-
+  
     try {
       const savedEvent = await createMatchEvent({
         event_type: action,
@@ -63,18 +52,20 @@ function Game() {
         play_direction: playDirection,
         match: selectedMatchId,
       });
-      console.log('Event saved successfully:', savedEvent);
-    } catch (error) {
-      console.error('Failed to save event:', error);
-    }
-  
-    setIsPitchClickable(false);
-    setSelectedActionId(null);
-  };
-  
 
-  const createEvent = (action, player, eventId, markerPosition) => ({
-    id: eventId,
+      addEvent({ ...createEvent(action, player, savedEvent.event_id, markerPosition), dbId: savedEvent.event_id });
+
+    } catch (error) {
+    console.error('Failed to save event:', error);
+    }
+
+    setIsPitchClickable(false);
+    setSelectedAction(null);
+    
+  };  
+
+  const createEvent = (action, player, dbId, markerPosition) => ({
+    id: dbId,
     message: `${action} by ${player ? player.player_last_name : 'Unknown Player'} (${player ? player.player_number : 'N/A'}) at ${new Date().toLocaleTimeString()}`,
     timestamp: Date.now(),
     flagged: false,
@@ -85,30 +76,37 @@ function Game() {
     setEvents(prevEvents => [event, ...prevEvents]);
   };
 
-  const toggleEventFlag = (id) => {
-    setEvents(events.map(event => event.id === id ? { ...event, flagged: !event.flagged } : event));
+  const toggleEventFlag = (dbId) => {
+    setEvents(events.map(event => event.dbId === dbId ? { ...event, flagged: !event.flagged } : event));
   };
 
-  const initiateDeleteEvent = (id) => {
+  const initiateDeleteEvent = (dbId) => {
     const countdownTime = 3;
-    const timer = setTimeout(() => finalizeDelete(id), countdownTime * 1000);
-    setPendingDeletes(prev => [...prev, { id, timer, countdown: countdownTime }]);
+    const timer = setTimeout(() => finalizeDelete(dbId), countdownTime * 1000);
+    setPendingDeletes(prev => [...prev, { dbId, timer, countdown: countdownTime }]);
   };
 
-  const undoDeleteEvent = (id) => {
+  const undoDeleteEvent = (dbId) => {
     setPendingDeletes(prev => {
-      const item = prev.find(pd => pd.id === id);
+      const item = prev.find(pd => pd.dbId === dbId);
       if (item) {
         clearTimeout(item.timer);
       }
-      return prev.filter(pd => pd.id !== id);
+      return prev.filter(pd => pd.dbId !== dbId);
     });
   };
 
-  const finalizeDelete = (id) => {
-    setEvents(prev => prev.filter(event => event.id !== id));
-    setPendingDeletes(prev => prev.filter(pd => pd.id !== id));
+  const finalizeDelete = async (dbId) => {
+    setEvents(prev => prev.filter(event => event.dbId !== dbId));
+    try {
+      await deleteMatchEventDB(dbId);
+      setPendingDeletes(prev => prev.filter(pd => pd.dbId !== dbId));
+    } catch (error) {
+      console.error("Failed to delete event from database:", error);
+    }
   };
+  
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -119,7 +117,7 @@ function Game() {
         })).filter(pd => {
           if (pd.countdown < 1) {
             clearTimeout(pd.timer);
-            finalizeDelete(pd.id);
+            finalizeDelete(pd.dbId);
             return false;
           }
           return true;

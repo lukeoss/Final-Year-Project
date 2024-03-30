@@ -1,3 +1,13 @@
+.marker-img {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+  
+.marker-img-loaded {
+    opacity: 1;
+}
+
+
 .pitch {
     background-color: #64976c;
     height: 416px;

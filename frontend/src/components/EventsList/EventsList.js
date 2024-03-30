@@ -6,9 +6,9 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
 
   if (isPendingDelete) {
     return (
-      <div key={event.id} style={{ ...commonStyles, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <div key={event.dbId} style={{ ...commonStyles, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <Button variant="primary" className="my-1" onClick={() => onUndo(event.id)} style={{ marginRight: '10px' }}>Undo</Button>
+          <Button variant="primary" className="my-1" onClick={() => onUndo(event.dbId)} style={{ marginRight: '10px' }}>Undo</Button>
           <div style={{ backgroundColor: '#d9edf7', color: '#31708f', padding: '5px', borderRadius: '5px' }}>
             {countdown}s
           </div>
@@ -20,10 +20,10 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
   }
 
   return (
-    <div key={event.id} style={{ ...commonStyles, backgroundColor: event.flagged ? 'yellow' : 'transparent' }}>
+    <div key={event.dbId} style={{ ...commonStyles, backgroundColor: event.flagged ? 'yellow' : 'transparent' }}>
       <p>{event.message}</p>
-      <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onFlag(event.id)}>Flag</Button>
-      <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onDelete(event.id)}>Delete</Button>
+      <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onFlag(event.dbId)}>Flag</Button>
+      <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onDelete(event.dbId)}>Delete</Button>
       <Button variant="primary" className="my-1" >Edit</Button>
       <hr class="solid"></hr>
     </div>
@@ -34,10 +34,10 @@ function EventsList({ events, onFlag, onDelete, onUndo, pendingDeletes }) {
   return (
     <div style={{ maxHeight: '500px', overflowY: 'auto', position: 'relative' }}>
       {events.map((event) => {
-        const pendingDelete = pendingDeletes.find(pd => pd.id === event.id);
+        const pendingDelete = pendingDeletes.find(pd => pd.dbId === event.dbId);
         return (
           <EventsListItem
-            key={event.id}
+            key={event.dbId}
             event={event}
             onFlag={onFlag}
             onDelete={onDelete}
