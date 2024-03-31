@@ -119,7 +119,7 @@ const Account = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center justify-content-between">
                 <div className="col mr-2" style={{ paddingLeft: '15px' }}>
-                  <div className="text-xs font-weight-bold text-info text-uppercase mb-1">Latest Games Successful Shots</div>
+                  <div className="text-xs font-weight-bold text-info text-uppercase mb-1">Successful Shots</div>
                   <div className="d-flex align-items-center">
                     <div className="mr-3">
                         <div className="h5 mb-0 font-weight-bold text-gray-800">{Math.round(dashboardData.all_time.successful_shots_percentage)}%</div>
@@ -165,8 +165,7 @@ const Account = () => {
             <h6 className="m-0 font-weight-bold text-primary">
               All Time Shot Distribution <span className="info-icon">
                 <i className="fa-solid fa-circle-info fa-sm "></i>
-                <span className="info-text">These plots represent the shot distribution across all recorded games, 
-                for more detailed and specific plots see the individual games section.</span>
+                <span className="info-text">Data across all games, translated to shooting in the one direction (Left)</span>
               </span>
             </h6>
               <Dropdown>
@@ -239,9 +238,46 @@ const Account = () => {
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
-
-
           </div>
+
+          <div className="row">
+            <div className="col-xl-6">
+              <div className="card border-left shadow h-100 py-2">
+                <div className="card-body">
+                  <div className="row no-gutters align-items-center">
+                    <div className="col mr-2">
+                      <div className="text-s font-weight-bold text-primary text-camelcase mb-1" style={{paddingLeft: '15px'}}>My Games</div>
+                    </div>
+                    <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
+                    <Link to="/games" className="btn btn-primary btn-icon-split">
+                        <span className="text">View My Games</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-xl-6">
+              <div className="card border-left shadow h-100 py-2">
+                <div className="card-body">
+                  <div className="row no-gutters align-items-center">
+                    <div className="col mr-2">
+                      <div className="text-s font-weight-bold text-primary text-camelcase mb-1" style={{paddingLeft: '15px'}}>My Teams</div>
+                    </div>
+                    <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
+                    <Link to="/teams" className="btn btn-primary btn-icon-split">
+                        <span className="text">View My Teams</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
         </div>
       </div>
     </div>
