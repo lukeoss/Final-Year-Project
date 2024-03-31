@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import PitchCanvas from '../components/PlotPitch/PitchCanvas.js';
 import './Account.css';
 
 const Account = () => {
-  // Assuming 'numberoflatestgames' is a route parameter for selecting filtered stats
+  const [eventFilter, setEventFilter] = useState('');
   const [dashboardData, setDashboardData] = useState({
     all_time: {
       goals: 0,
@@ -51,9 +52,14 @@ const Account = () => {
     fetchData();
   }, []);
 
-  const handleSelect = (e, numberOfGames) => {
+  const handleSelectProgress = (e, numberOfGames) => {
     e.preventDefault();
     fetchData(numberOfGames);
+  };
+
+  const handleSelectPlot = (e, filterType) => {
+    e.preventDefault();
+    setEventFilter(filterType);
   };
 
   const calculatePercentage = (value, total) => {
@@ -163,19 +169,20 @@ const Account = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={(e) => handleSelect(e, 'goals')}>Goals</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelect(e, 'points')}>Points</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelect(e, 'misses')}>Missed</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'goal')}>Goals</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'point')}>Points</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'miss')}>Missed</Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item onClick={(e) => handleSelect(e, '')}>Everything</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, '')}>Everything</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </div>
 
             <div className="card-body">
-              <div className="chart-area">
-                <canvas id="myAreaChart"></canvas>
-              </div>
+              {/* <div className="chart-area"> */}
+                <PitchCanvas filter={eventFilter} />
+                {/* <canvas id="myAreaChart"></canvas> */}
+              {/* </div> */}
             </div>
           </div>
         </div>
@@ -190,11 +197,11 @@ const Account = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={(e) => handleSelect(e, '1')}>Previous Game</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelect(e, '5')}>Previous 5 Games</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelect(e, '10')}>Previous 10 Games</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '1')}>Previous Game</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '5')}>Previous 5 Games</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '10')}>Previous 10 Games</Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item onClick={(e) => handleSelect(e, '')}>All Time</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '')}>All Time</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </div>
