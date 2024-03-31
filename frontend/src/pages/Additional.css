@@ -41,3 +41,22 @@
 .brand-text {
     font-family: 'Facon', sans-serif !important; /* Fallback to sans-serif */
 }
+
+.info-icon:hover .info-text {
+    visibility: visible;
+}
+
+.info-text {
+    visibility: hidden;
+    position: absolute;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    max-width: 300px;
+    padding: 5px;
+    z-index: 999;
+    color: #000;
+}
+
+  

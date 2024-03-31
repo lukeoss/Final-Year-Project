@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import PitchCanvas from '../components/PlotPitch/PitchCanvas.js';
+import './Additional.css';
 import './Account.css';
 
 const Account = () => {
@@ -68,7 +69,6 @@ const Account = () => {
     }
     return '0%';
   };
-
   
   return (
     
@@ -162,7 +162,13 @@ const Account = () => {
         <div className="col-xl-8 col-lg-7">
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 font-weight-bold text-primary">Shot Distribution</h6>
+            <h6 className="m-0 font-weight-bold text-primary">
+              All Time Shot Distribution <span className="info-icon">
+                <i className="fa-solid fa-circle-info fa-sm "></i>
+                <span className="info-text">These plots represent the shot distribution across all recorded games, 
+                for more detailed and specific plots see the individual games section.</span>
+              </span>
+            </h6>
               <Dropdown>
                 <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
                   <i className="fas fa-ellipsis-v fa-sm text-white-50"></i>
@@ -180,7 +186,7 @@ const Account = () => {
 
             <div className="card-body">
               {/* <div className="chart-area"> */}
-                <PitchCanvas filter={eventFilter} />
+                <PitchCanvas filter={eventFilter}  filteredEvents={dashboardData.filtered} />
                 {/* <canvas id="myAreaChart"></canvas> */}
               {/* </div> */}
             </div>
@@ -210,7 +216,7 @@ const Account = () => {
                 <h4 className="small font-weight-bold">Goal<span className="float-right">
                     {calculatePercentage(dashboardData.filtered.goals, dashboardData.filtered.total_shots)}</span></h4>
                 <div className="progress mb-4">
-                    <div className="progress-bar bg-danger" role="progressbar" 
+                    <div className="progress-bar bg-success" role="progressbar" 
                     style={{ width: calculatePercentage(dashboardData.filtered.goals, dashboardData.filtered.total_shots) }}
                     aria-valuenow={calculatePercentage(dashboardData.filtered.goals, dashboardData.filtered.total_shots)}
                     aria-valuemin="0" aria-valuemax="100"></div>
@@ -227,7 +233,7 @@ const Account = () => {
                 <h4 className="small font-weight-bold">Miss<span className="float-right">
                     {calculatePercentage(dashboardData.filtered.misses, dashboardData.filtered.total_shots)}</span></h4>
                 <div className="progress mb-4">
-                    <div className="progress-bar" role="progressbar" 
+                    <div className="progress-bar bg-danger" role="progressbar" 
                     style={{ width: calculatePercentage(dashboardData.filtered.misses, dashboardData.filtered.total_shots) }}
                     aria-valuenow={calculatePercentage(dashboardData.filtered.misses, dashboardData.filtered.total_shots)}
                     aria-valuemin="0" aria-valuemax="100"></div>

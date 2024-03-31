@@ -45,7 +45,7 @@ const PitchCanvas = ({ filter }) => {
     const applyFilter = () => {
       setFilteredEvents(filter
         ? allEvents.filter(event => event.event_type.toLowerCase() === filter.toLowerCase())
-        : allEvents
+        : allEvents.filter(event => event.event_type !== 'Block' && event.event_type !== 'Foul')
       );
     };
 
@@ -68,7 +68,7 @@ const PitchCanvas = ({ filter }) => {
         ctx.arc(
           (event.coord_x / 100) * canvas.width,
           (event.coord_y / 100) * canvas.height,
-          5, 0, 2 * Math.PI
+          10, 0, 2 * Math.PI
         );
         ctx.fill();
       });
@@ -80,17 +80,17 @@ const PitchCanvas = ({ filter }) => {
   const getEventColor = (eventType) => {
     switch (eventType) {
       case 'Goal':
-        return 'green';
+        return '#169b6b';
       case 'Point':
-        return 'blue';
+        return '#f6c23e';
       case 'Miss':
-        return 'red';
+        return '#e74a3b';
       default:
-        return 'black';
+        return 'blue';
     }
   };
 
-  return <canvas ref={canvasRef} />;
+  return <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: '100%' }}/>;
 };
 
 export default PitchCanvas;
