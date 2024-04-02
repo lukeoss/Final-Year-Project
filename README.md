@@ -1,1 +1,1 @@
-[GAASTAT_Poster.jpg](./GAASTAT_Poster.jpg)
+![GAASTAT_Poster.jpg](https://github.com/lukeoss/Final-Year-Project/blob/main/GAASTAT_Poster.jpg)
