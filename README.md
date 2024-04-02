@@ -1,1 +1,1 @@
-[GAASTAT.pdf](./GAASTAT.pdf) 
+[GAASTAT_Poster.jpg](./GAASTAT_Poster.jpg)
