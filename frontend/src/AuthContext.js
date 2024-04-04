@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const refreshAccessToken = async () => {
@@ -27,6 +28,8 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error('Error refreshing access token:', error);
         setIsLoggedIn(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -56,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   const setUserLoggedIn = () => setIsLoggedIn(true);
   
   return (
-    <AuthContext.Provider value={{ isLoggedIn, logout, setUserLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, isLoading, logout, setUserLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

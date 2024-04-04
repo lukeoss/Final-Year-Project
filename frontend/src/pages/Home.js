@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useAuth } from '../AuthContext.js';
 import './Additional.css';
 
 function Copyright(props) {
@@ -27,6 +28,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Home() {
+  const { isLoggedIn } = useAuth();
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -61,16 +64,27 @@ export default function Home() {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" component={RouterLink} 
-                to="/create-account">Create An Account
-              </Button>
+              {isLoggedIn ? (
+              <>
+                {/* Show these buttons if the user is logged in */}
+                <Button variant="contained" component={RouterLink} to="/stagegames">
+                  Start or View Games
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="contained" component={RouterLink} 
+                  to="/create-account">Create An Account
+                </Button>
 
-              <Button variant="outlined" 
-                component={RouterLink} 
-                to="/login"
-              >
-                Login
-              </Button>
+                <Button variant="outlined" 
+                  component={RouterLink} 
+                  to="/login"
+                >
+                  Login
+                </Button>
+              </> 
+            )}
             </Stack>
           </Container>
         </Box>

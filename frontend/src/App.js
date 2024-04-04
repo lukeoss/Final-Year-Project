@@ -1,20 +1,12 @@
 // App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { Container, Navbar, Nav } from 'react-bootstrap';
-import { TeamProvider } from './components/TeamContext';
-import { AuthProvider, useAuth } from './AuthContext';
-import Home from './pages/Home';
-import Game from './pages/Game';
-import NewGame from './pages/NewGame';
-import StageGame from './pages/StageGame';
-import Teams from './pages/Teams';
-import Login from './pages/Login';
-import Account from './pages/Account';
-import CreateAccount from './pages/CreateAccount';
+import { useAuth, AuthProvider } from './AuthContext.js';
+import { TeamProvider } from './components/TeamContext.js';
+import ProtectedRoutes from './ProtectedRoutes';
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import { ProtectedRoute } from './ProtectedRoute.js';
 
 const NavBarWithAuth = () => {
   const { isLoggedIn, logout } = useAuth();
@@ -35,21 +27,20 @@ const NavBarWithAuth = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/games">Games</Nav.Link>
+            <Nav.Link as={Link} to="/stagegames">Games</Nav.Link>
             <Nav.Link as={Link} to="/teams">Teams</Nav.Link>
-            <Nav.Link as={Link} to="/account">Dashboard</Nav.Link> :
-            {
-              isLoggedIn ?
-              <Nav.Link onClick={handleLogout}>Logout</Nav.Link> :
+            <Nav.Link as={Link} to="/account">Dashboard</Nav.Link>
+            {isLoggedIn ? (
+              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+            ) : (
               <Nav.Link as={Link} to="/login">Login</Nav.Link>
-            }
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
   );
 };
-
 
 function App() {
   return (
@@ -58,18 +49,7 @@ function App() {
         <Router>
           <Container fluid className="p-0">
             <NavBarWithAuth />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/game" element={<ProtectedRoute><Game /></ProtectedRoute>} />
-              <Route path="/newgame" element={<ProtectedRoute><NewGame /></ProtectedRoute>} />
-              <Route path="/games" element={<ProtectedRoute><StageGame /></ProtectedRoute>} />
-              <Route path="/teams" element={<ProtectedRoute><Teams /></ProtectedRoute>} />
-              <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-              <Route path="/create-account" element={<CreateAccount />} />
-              <Route path="/login" element={<Login />} />
-              {/* Placeholder for implementing protected routes or conditional rendering based on auth status */}
-              <Route path="*" element={<Home />} /> {/* Handles unknown paths */}
-            </Routes>
+            <ProtectedRoutes /> {/* Use ProtectedRoutes here */}
           </Container>
         </Router>
       </TeamProvider>
