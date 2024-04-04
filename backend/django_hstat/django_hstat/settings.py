@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,13 +28,19 @@ SECRET_KEY = 'django-insecure-8*#5b1klp(o0ts3y14d$d@463xcc52fmws_ga(*zcnjpnq_b74
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SECURE_SSL_REDIRECT = True  # Redirect HTTP requests to HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SSL_CERTIFICATE_PATH = 'C:/Users/lukeo/Desktop/ProjectFolder/certs/localhost.crt'
+SSL_KEY_PATH = 'C:/Users/lukeo/Desktop/ProjectFolder/certs/localhost.key'
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,11 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
-    'hstat',
+    'rest_framework.authtoken',
+    'sslserver',
+    'hstat.apps.HstatConfig',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,19 +62,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-# ]
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-  'http://localhost:3000',
-)
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost:3000"
+]
 
+CORS_ORIGIN_WHITELIST = [
+    'https://localhost:3000',
+    # 'www.gaastat.com',
+    # 'www.gaastat.eu',
+    # 'www.gaastat.ie',
+]
 
 ROOT_URLCONF = 'django_hstat.urls'
 
@@ -86,35 +97,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_hstat.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hurlingstat_db',
         'USER': 'django',
-        'PASSWORD': 'q98#946,nFwC$~Oxhc@',  # Your actual password
-        'HOST': 'localhost',  # Docker service name as host
-        'PORT': '3306',  # Default MySQL port
+        'PASSWORD': 'q98#946,nFwC$~Oxhc@',
+        'HOST': 'localhost',    # Docker service name as host
+        'PORT': '3306',         # Default MySQL port
     }
 }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'hurlingstat_db',
-#         'USER': 'django',
-#         'PASSWORD': 'q98#946,nFwC$~Oxhc@',
-#         'HOST': 'db',
-#         'PORT': '3306',
-#         # 'OPTIONS': {
-#         #     'unix_socket': '/var/run/mysqld/mysqld.sock',
-#         # },
-#     }
-# }
 
 # import urllib.parse
 
@@ -155,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-GB'
 
 TIME_ZONE = 'UTC'
 
@@ -174,15 +166,19 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ),
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'hstat.authentication.CookieJWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
-#     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-#     'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
-#     'SLIDING_TOKEN_LIFETIME_REFRESH_DELTA': timedelta(days=7),
-# }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    # 'AUTH_COOKIE': 'access',
+}
+
+JWT_AUTH_COOKIE = 'access'

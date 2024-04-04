@@ -1,3 +1,4 @@
+// Game.js
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTeam } from '../components/TeamContext';
@@ -30,7 +31,7 @@ function Game() {
   const handleMarkerPlacement = async (action, { playerId, playerNumber }, markerPosition) => {
     const player = team.players.find(p => p.player_number === playerNumber);
     
-    if (!player || !player.player_id) {
+    if (!player || !player.id) {
       console.error("Player ID is undefined or player not found.");
       return;
     }
@@ -47,13 +48,15 @@ function Game() {
         event_type: action,
         coord_x: markerPosition.x,
         coord_y: markerPosition.y,
-        player: playerId,
         time: timeNow,
         play_direction: playDirection,
         match: selectedMatchId,
+        player: playerId,
       });
 
-      addEvent({ ...createEvent(action, player, savedEvent.event_id, markerPosition), dbId: savedEvent.event_id });
+      console.log(savedEvent.id)
+      addEvent({ ...createEvent(action, player, savedEvent.id, markerPosition), dbId: savedEvent.id });
+      // addEvent({ ...createEvent(action, player, markerPosition), dbId: savedEvent.id });  
 
     } catch (error) {
     console.error('Failed to save event:', error);
@@ -105,8 +108,6 @@ function Game() {
       console.error("Failed to delete event from database:", error);
     }
   };
-  
-  
 
   useEffect(() => {
     const interval = setInterval(() => {

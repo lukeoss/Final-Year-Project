@@ -1,3 +1,4 @@
+// Pitch.js
 import React, { useState, useRef } from 'react';
 import pitchImage from './Pitch_image.png';
 import goalIcon from './goal_icon.png';
@@ -29,9 +30,7 @@ export const Pitch = ({ onMarkerPlaced, isClickable, selectedAction, markers, pl
   };
 
   const handleModalClose = (playerInfo) => {
-    // Assuming playerInfo is an object with playerId and possibly other properties
     if (temporaryMarker && playerInfo) {
-      // Make sure to pass an object with playerId, even if it's a placeholder or undefined
       onMarkerPlaced(selectedAction, { playerId: playerInfo.playerId, playerNumber: playerInfo.playerNumber }, temporaryMarker);
     } else {
       console.error("Player information is missing.");

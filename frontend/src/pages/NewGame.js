@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTeam } from '../components/TeamContext';
-import { createMatch } from '../apiService';
+import { createMatch, fetchTeams } from '../apiService';
+
 
 import "./Additional.css";
 import "./Account.css";
@@ -16,30 +17,28 @@ const NewGame = () => {
     const navigate = useNavigate();
 
     const countPlayersInTeam = (teamId) => {
-        const team = teams.find(team => team.team_id === teamId);
+        const team = teams.find(team => team.id === teamId);
         return team ? team.players.length : 0;
     };
     
     const handleTeamSelect = (teamId) => {
-        const team = teams.find(t => t.team_id === teamId);
+        const team = teams.find(team => team.id === teamId);
         setTeam(team);
         setSelectedTeamId(teamId);
     };
       
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`${apiBaseURL}teams/`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            setTeams(data);
-            const allPlayers = data.reduce((acc, team) => [...acc, ...team.players], []);
-            setPlayers(allPlayers);
-        } catch (error) {
-            console.error('There has been a problem with your fetch operation:', error);
-        }
-    };
-    
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const teamsData = await fetchTeams();
+                setTeams(teamsData);
+
+                const allPlayers = teamsData.reduce((acc, team) => [...acc, ...team.players], []);
+                setPlayers(allPlayers);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        };
         fetchData();
     }, []);
 
@@ -47,12 +46,14 @@ const NewGame = () => {
         if (selectedTeamId && selectedDirection) {
             try {
                 const home_team_id = selectedTeamId;
-                const away_team_id = selectedTeamId; // Placeholder for away team ID
-                const location = "Default Location";
-                const competition = "Regular Season";
-    
-                const match = await createMatch(home_team_id, away_team_id, location, competition);
-                navigate("/game", { state: { matchId: match.match_id } });
+                const away_team_id = selectedTeamId;    // Placeholder for away team ID
+                const location = "Default Location";    // Worry about this later
+                const competition = "Regular Season";   // This too
+                const accessToken = localStorage.getItem('accessToken');
+
+                const match = await createMatch(home_team_id, away_team_id, location, competition, accessToken);
+
+                navigate("/game", { state: { matchId: match.id } });
             } catch (error) {
                 console.error("Failed to start game:", error);
             }
@@ -73,7 +74,7 @@ const NewGame = () => {
             );
         }
 
-        const selectedTeamPlayers = players.filter(player => player.player_team_id === selectedTeamId);
+        const selectedTeamPlayers = players.filter(player => player.player_team === selectedTeamId);
 
         if (!selectedTeamPlayers.length) return null;
         
@@ -131,20 +132,20 @@ const NewGame = () => {
                             {teams.map((team, index) => {
                                 const textColorClass = textColors[index % textColors.length];
                                 return (
-                                <div key={team.team_id} className="mb-4">
+                                <div key={team.id} className="mb-4">
                                     <div className="card border-left shadow h-100 py-2">
                                         <div className="card-body">
                                             <div className="row no-gutters align-items-center">
                                                 <div className="col" style={{ paddingLeft: '15px' }}>
                                                     <div className={`h4 font-weight-bold ${textColorClass} text-camelcase mb-1`}>{team.team_name}</div>
-                                                    <div className="h5 mb-0 font-weight-bold text-gray-800">{countPlayersInTeam(team.team_id)} Players</div>
+                                                    <div className="h5 mb-0 font-weight-bold text-gray-800">{countPlayersInTeam(team.id)} Players</div>
                                                 </div>
                                                 <div className="col-auto" style={{ paddingRight: '15px' }}>
                                                     <div className="button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <button className={`btn shadow-sm d-block text-white ${selectedTeamId === team.team_id ? 'btn-success' : 'btn-primary'}`} 
+                                                    <button className={`btn shadow-sm d-block text-white ${selectedTeamId === team.id ? 'btn-success' : 'btn-primary'}`} 
                                                     style={{ width: '100%' }} 
-                                                    onClick={() => handleTeamSelect(team.team_id)}>
-                                                        <i className={`fas ${selectedTeamId === team.team_id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
+                                                    onClick={() => handleTeamSelect(team.id)}>
+                                                        <i className={`fas ${selectedTeamId === team.id ? '' : 'fa-hand-pointer'} fa-sm text-white-50`}></i> {selectedTeamId === team.team_id ? "Selected" : 'Select'}
                                                     </button>
                                                     </div>
                                                 </div>

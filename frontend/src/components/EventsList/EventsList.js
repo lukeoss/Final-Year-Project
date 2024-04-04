@@ -1,9 +1,11 @@
+// EventsList.js
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
 function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, countdown }) {
   const commonStyles = { margin: '10px', padding: '5px', textAlign: 'center' };
 
+  // console.log(event);
   if (isPendingDelete) {
     return (
       <div key={event.dbId} style={{ ...commonStyles, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>

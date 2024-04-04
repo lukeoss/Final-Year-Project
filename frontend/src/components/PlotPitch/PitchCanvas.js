@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import pitchImageSrc from './pitch_blacklines.jpg';
+import { fetchMatchEvents } from '../../apiService.js';
 
 const PitchCanvas = ({ filter }) => {
   const canvasRef = useRef(null);
@@ -9,35 +10,30 @@ const PitchCanvas = ({ filter }) => {
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/match-events/', {
-          headers: { Accept: 'application/json' },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch event data');
-        }
-        const data = await response.json();
+        const data = await fetchMatchEvents();
         const normalizedEvents = data.map(event => {
-            let coord_x, coord_y;
-            if (event.play_direction === "Right") {
-                coord_x = 100 - event.coord_x;
-                coord_y = 100 - event.coord_y;
-            } else {
-                coord_x = event.coord_x;
-                coord_y = event.coord_y;
-            }
-            
-            return {
-                ...event,
-                coord_x: coord_x,
-                coord_y: coord_y
-            };
+          let coord_x, coord_y;
+          if (event.play_direction === "Right") {
+            coord_x = 100 - event.coord_x;
+            coord_y = 100 - event.coord_y;
+          } else {
+            coord_x = event.coord_x;
+            coord_y = event.coord_y;
+          }
+    
+          return {
+            ...event,
+            coord_x: coord_x,
+            coord_y: coord_y
+          };
         });
+    
         setAllEvents(normalizedEvents);
       } catch (error) {
         console.error('Error fetching event data:', error);
       }
     };
-
+    
     fetchEventData();
   }, []);
 

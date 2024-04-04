@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import PitchCanvas from '../components/PlotPitch/PitchCanvas.js';
+import { fetchDashboardData } from '../apiService.js';
 import './Additional.css';
 import './Account.css';
 
@@ -30,20 +31,14 @@ const Account = () => {
   });
 
   const fetchData = async (numberoflatestgames = '') => {
-    const endpoint = numberoflatestgames ? `dashboard-data/${numberoflatestgames}/` : 'dashboard-data/';
     try {
-      const response = await fetch(`http://localhost:8000/api/${endpoint}`, {
-        headers: { Accept: 'application/json' },
-      });
-      if (!response.ok) throw new Error('Failed to fetch dashboard data');
-      const data = await response.json();
-
+      const data = await fetchDashboardData(numberoflatestgames);
       setDashboardData(prevState => ({
         ...prevState,
         filtered: data.filtered,
         all_time: data.all_time || prevState.all_time,
       }));
-      console.log(data.filtered)
+      console.log(data.filtered);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
