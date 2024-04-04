@@ -8,8 +8,6 @@ import { createMatch, fetchTeams } from '../apiService';
 import "./Additional.css";
 import "./Account.css";
 
-const apiBaseURL = 'http://localhost:8000/api/';
-
 const NewGame = () => {
     const { setTeam, selectedTeamId, setSelectedTeamId, selectedDirection, setSelectedDirection } = useTeam();
     const [teams, setTeams] = useState([]);

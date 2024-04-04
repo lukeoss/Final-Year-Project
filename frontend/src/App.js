@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './AuthContext';
 import Home from './pages/Home';
 import Game from './pages/Game';
 import NewGame from './pages/NewGame';
+import StageGame from './pages/StageGame';
 import Teams from './pages/Teams';
 import Login from './pages/Login';
 import Account from './pages/Account';
@@ -34,9 +35,9 @@ const NavBarWithAuth = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/newgame">New Game</Nav.Link>
+            <Nav.Link as={Link} to="/games">Games</Nav.Link>
             <Nav.Link as={Link} to="/teams">Teams</Nav.Link>
-            <Nav.Link as={Link} to="/account">My Account</Nav.Link> :
+            <Nav.Link as={Link} to="/account">Dashboard</Nav.Link> :
             {
               isLoggedIn ?
               <Nav.Link onClick={handleLogout}>Logout</Nav.Link> :
@@ -61,6 +62,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/game" element={<ProtectedRoute><Game /></ProtectedRoute>} />
               <Route path="/newgame" element={<ProtectedRoute><NewGame /></ProtectedRoute>} />
+              <Route path="/games" element={<ProtectedRoute><StageGame /></ProtectedRoute>} />
               <Route path="/teams" element={<ProtectedRoute><Teams /></ProtectedRoute>} />
               <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
               <Route path="/create-account" element={<CreateAccount />} />
