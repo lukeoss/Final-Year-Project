@@ -36,12 +36,14 @@ CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_raw.split(",")
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-DATABASES = {
-    'default': env.db()
-}
 # DATABASES = {
-#     'default': dj_database_url.parse(os.environ.get('CLEARDB_DATABASE_URL'))
+#     'default': env.db()
 # }
+
+DATABASES = {
+    'default': dj_database_url.parse(env('JAWSDB_URL'))
+}
+
 
 # Application definition
 
