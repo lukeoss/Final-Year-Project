@@ -7,7 +7,6 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
@@ -29,24 +28,14 @@ DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True
 
 cors_origins_raw = env.str("CORS_ALLOWED_ORIGINS", default="")
 CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()]
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-# DATABASES = {
-#     'default': env.db()
-# }
-
-DATABASES = {
-    'default': dj_database_url.parse(env('JAWSDB_URL'))
-}
-
-
 # Application definition
-
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -157,4 +146,10 @@ JWT_AUTH_COOKIE = 'access'
 try:
     from .local_settings import *
 except ImportError:
+    # Database
+    # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+    DATABASES = {
+        'default': dj_database_url.parse(env('JAWSDB_URL'))
+    }
+
     pass

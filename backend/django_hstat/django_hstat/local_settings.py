@@ -1,5 +1,15 @@
 # local_settings.py
 from .settings import *
+from pathlib import Path
+import environ
+import os
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+
+environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
 DEBUG = True
 
@@ -35,6 +45,9 @@ CORS_ORIGIN_WHITELIST = [
     "https://localhost:3000",
 ]
 
+DATABASES = {
+    'default': env.db()
+}
 
 
 # import urllib.parse
