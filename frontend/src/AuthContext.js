@@ -1,17 +1,18 @@
 // AuthContext.js
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const apiBaseURL = process.env.REACT_APP_API_BASE_URL;
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  
   useEffect(() => {
     const refreshAccessToken = async () => {
       try {
-        const response = await fetch('https://localhost:8000/api/token/refresh/', {
+        const response = await fetch(`${apiBaseURL}token/refresh/`, {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const response = await fetch('https://localhost:8000/api/logout/', {
+      const response = await fetch(`${apiBaseURL}logout/`, {
         method: 'POST',
         credentials: 'include',
       });

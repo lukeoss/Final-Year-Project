@@ -1,64 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import pitchImageSrc from './pitch_blacklines.jpg';
-import { fetchMatchEvents } from '../../apiService.js';
 
-const PitchCanvas = ({ filter }) => {
+const PitchCanvas = ({ events }) => {
   const canvasRef = useRef(null);
-  const [allEvents, setAllEvents] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
-
-  useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const data = await fetchMatchEvents();
-        const normalizedEvents = data.map(event => {
-          let coord_x, coord_y;
-          if (event.play_direction === "Right") {
-            coord_x = 100 - event.coord_x;
-            coord_y = 100 - event.coord_y;
-          } else {
-            coord_x = event.coord_x;
-            coord_y = event.coord_y;
-          }
-    
-          return {
-            ...event,
-            coord_x: coord_x,
-            coord_y: coord_y
-          };
-        });
-    
-        setAllEvents(normalizedEvents);
-      } catch (error) {
-        console.error('Error fetching event data:', error);
-      }
-    };
-    
-    fetchEventData();
-  }, []);
-
-  useEffect(() => {
-    const applyFilter = () => {
-      setFilteredEvents(filter
-        ? allEvents.filter(event => event.event_type.toLowerCase() === filter.toLowerCase())
-        : allEvents.filter(event => event.event_type !== 'Block' && event.event_type !== 'Foul')
-      );
-    };
-
-    applyFilter();
-  }, [filter, allEvents]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pitchImage = new Image();
 
-    pitchImage.onload = () => {
-      canvas.width = pitchImage.width;
-      canvas.height = pitchImage.height;
-      ctx.drawImage(pitchImage, 0, 0, canvas.width, canvas.height);
+    const normalizedEvents = events.map(event => {
+      const coord_x = event.play_direction === "Right" ? 100 - event.coord_x : event.coord_x;
+      const coord_y = event.play_direction === "Right" ? 100 - event.coord_y : event.coord_y;
+      return { ...event, coord_x, coord_y };
+    });
 
-      filteredEvents.forEach(event => {
+    const drawEvents = () => {
+      ctx.drawImage(pitchImage, 0, 0, canvas.width, canvas.height);
+      normalizedEvents.forEach(event => {
         ctx.fillStyle = getEventColor(event.event_type);
         ctx.beginPath();
         ctx.arc(
@@ -70,8 +29,32 @@ const PitchCanvas = ({ filter }) => {
       });
     };
 
+    pitchImage.onload = () => {
+      canvas.width = pitchImage.width;
+      canvas.height = pitchImage.height;
+      drawEvents();
+    };
+
     pitchImage.src = pitchImageSrc;
-  }, [filteredEvents]);
+
+    const handleClick = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      normalizedEvents.forEach(event => {
+        const eventX = (event.coord_x / 100) * canvas.width;
+        const eventY = (event.coord_y / 100) * canvas.height;
+        if (Math.sqrt((x - eventX) ** 2 + (y - eventY) ** 2) <= 10) {
+          alert(`Clicked on event: ${event.event_type} by ${event.player_id} at ${event.time}`);
+        }
+      });
+    };
+
+    canvas.addEventListener('click', handleClick);
+
+    return () => canvas.removeEventListener('click', handleClick);
+  }, [events]);
 
   const getEventColor = (eventType) => {
     switch (eventType) {
@@ -81,12 +64,30 @@ const PitchCanvas = ({ filter }) => {
         return '#f6c23e';
       case 'Miss':
         return '#e74a3b';
+      case 'Block':
+        return 'blue';
+      case 'Foul':
+        return '#858796';
       default:
         return 'blue';
     }
   };
 
-  return <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: '100%' }}/>;
+  return (
+    
+    <div className="container-fluid">
+      <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: '100%' }}/>
+
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      {['Goal', 'Point', 'Miss', 'Block', 'Foul'].map((eventType) => (
+          <div key={eventType} style={{ textAlign: 'center', marginRight: '20px' }}>
+            <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: getEventColor(eventType), display: 'inline-block' }}></div>
+            <div style={{ marginTop: '5px' }}>{eventType}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default PitchCanvas;

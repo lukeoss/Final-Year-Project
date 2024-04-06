@@ -1,6 +1,6 @@
 // Game.js
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useTeam } from '../components/TeamContext';
 import EventsList from '../components/EventsList/EventsList';
 import Pitch from '../components/Pitch/Pitch';
@@ -161,9 +161,9 @@ function Game() {
 
           <div className="card h-100" style={{ marginTop: '15px', marginLeft: '15px' }}>
             <div className="card-body d-flex flex-column justify-content-around align-items-center" style={{ overflowX: 'hidden' }}>
-            <button className="btn btn-primary my-1">
-            Substitution
-            </button>
+            <Link to={`/gameprofile/${selectedMatchId}`} className="btn btn-danger my-1">
+            End Game
+            </Link>
             </div>
           </div>
 

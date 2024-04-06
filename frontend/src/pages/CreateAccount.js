@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, createTheme, ThemeProvider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { checkEmailExists, createAccount, login } from '../apiService';
+import { useAuth } from '../AuthContext.js';
 
 const defaultTheme = createTheme();
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 export default function CreateAccount() {
     const navigate = useNavigate();
+    const { setUserLoggedIn  } = useAuth();
     const [formErrors, setFormErrors] = useState({
         email: '',
         password: '',
@@ -44,57 +47,30 @@ export default function CreateAccount() {
         }
         return isEmailValid;
     };
-    
-    const checkEmailExists = async (email) => {
-      try {
-          const response = await fetch('http://localhost:8000/check-email-exists/', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ email }),
-          });
-          const data = await response.json();
-          return data.exists; // Assuming the backend returns { exists: true/false }
-      } catch (error) {
-          console.error('Error:', error);
-          return false;
-      }
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        const email = data.get('email');
+        const password = data.get('password');
 
         if (!validateForm(data)) return;
 
-        const emailExists = await checkEmailExists(data.get('email'));
-        if (emailExists) {
-            alert('Email is already in use.');
-            return;
-        }
+        try {
+            if (await checkEmailExists(email)) {
+                alert('Email is already in use.');
+                return;
+            }
 
-        // Proceed with account creation
-        // Replace fetch URL with your environment-specific URL
-        fetch('http://localhost:8000/create-account/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                first_name: data.get('first_name'),
-                last_name: data.get('last_name'),
-                email: data.get('email'),
-                password: data.get('password'),
-            }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('Account created successfully!');
-                navigate('/');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            const accountCreationResponse = await createAccount(data.get('first_name'), data.get('last_name'), email, password);
+            const loginResponse = await login(email, password);
+            setUserLoggedIn();
+            alert('Account Created Successfully!');
+            navigate('/');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to create account or login. Please try again.');
+        }
     };
 
     return (

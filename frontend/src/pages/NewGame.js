@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTeam } from '../components/TeamContext';
 import { createMatch, fetchTeams } from '../apiService';
@@ -116,6 +116,9 @@ const NewGame = () => {
 
             <div className="d-sm-flex align-items-center justify-content-between mb-4" style={{ paddingTop: '15px' }}>
                 <h1 className="h3 mb-0 text-gray-800">Start a Game</h1>
+                <Link to={`/stagegames`} className="btn btn-sm btn-primary shadow-sm">
+                <i className="fas fa-arrow-left fa-sm text-white-50"></i> Back to Games
+        </Link>
             </div>
 
             <div className="row">
@@ -186,24 +189,7 @@ const NewGame = () => {
                 </div>
                 
                 <div className="col-xl-3 col-md-6 mb-4">
-                    <div className="card border-left shadow py-2">
-                        <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
-                            <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-                                <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
-                                <button 
-                                    className={`btn ${selectedTeamId && selectedDirection ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`}
-                                    style={{ width: '100%', height: '100%' }}
-                                    onClick={startGame}
-                                    disabled={!selectedTeamId || !selectedDirection}
-                                >
-                                    Start Game
-                                </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="card border-left shadow py-2" style={{ marginTop: '15px' }}>
+                <div className="card border-left shadow py-2" style={{ marginBottom: '15px' }}>
                         <div className="card-body d-flex align-items-center justify-content-center">
                             <div className="row no-gutters align-items-center">
                                 <div className="col mr-2" style={{ paddingLeft: '15px' }}>
@@ -238,6 +224,23 @@ const NewGame = () => {
 
                                     </div>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="card border-left shadow py-2">
+                        <div className="card-body d-flex align-items-center justify-content-center" style={{ padding: 25 }}>
+                            <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+                                <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
+                                <button 
+                                    className={`btn ${selectedTeamId && selectedDirection ? 'btn-primary' : 'btn-secondary'} shadow-sm d-flex align-items-center justify-content-center text-white`}
+                                    style={{ width: '100%', height: '100%' }}
+                                    onClick={startGame}
+                                    disabled={!selectedTeamId || !selectedDirection}
+                                >
+                                    Start Game
+                                </button>
                                 </div>
                             </div>
                         </div>

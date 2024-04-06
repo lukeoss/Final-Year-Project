@@ -11,6 +11,9 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import CreateAccount from './pages/CreateAccount';
 import LoadingComp from './components/LoadingComp/LoadingComponent.js';
+import PlayerProfile from './components/PlayerProfile/PlayerProfile.js';
+import GameProfile from './components/GameProfile/GameProfile.js';
+import PastGames from './pages/PastGames.js';
 
 const ProtectedRoute = ({ children }) => {
     const { isLoggedIn } = useAuth();
@@ -34,8 +37,11 @@ const ProtectedRoutes = () => {
             <Route path="/" element={<Home />} />
             <Route path="/game" element={<ProtectedRoute><Game /></ProtectedRoute>} />
             <Route path="/newgame" element={<ProtectedRoute><NewGame /></ProtectedRoute>} />
+            <Route path="/pastgames" element={<ProtectedRoute><PastGames/></ProtectedRoute>} />
             <Route path="/stagegames" element={isLoggedIn ? <StageGame /> : <Navigate to="/login" />} />
             <Route path="/teams" element={<ProtectedRoute><Teams /></ProtectedRoute>} />
+            <Route path="/playerprofile/:playerId" element={<ProtectedRoute><PlayerProfile/></ProtectedRoute>} />
+            <Route path="/gameprofile/:gameId" element={<ProtectedRoute><GameProfile/></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <Login />} />

@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import PitchCanvas from '../components/PlotPitch/PitchCanvas.js';
-import { fetchDashboardData } from '../apiService.js';
+import { fetchDashboardData, fetchUserName, fetchMatchEvents } from '../apiService.js';
 import './Additional.css';
 import './Account.css';
 
 const Account = () => {
+  const [currentPlotFilter, setPlotCurrentFilter] = useState('Everything ');
+  const [currentPrgFilter, setPrgCurrentFilter] = useState('All Time ');
   const [eventFilter, setEventFilter] = useState('');
+  const [userName, setUserName] =useState('');
+  const [matchEvents, setMatchEvents] = useState([]);
   const [dashboardData, setDashboardData] = useState({
     all_time: {
       goals: 0,
@@ -32,13 +36,16 @@ const Account = () => {
 
   const fetchData = async (numberoflatestgames = '') => {
     try {
+      const useName = await fetchUserName();
+      const allEventData = await fetchMatchEvents();
       const data = await fetchDashboardData(numberoflatestgames);
+      setUserName(useName);
+      setMatchEvents(allEventData);
       setDashboardData(prevState => ({
         ...prevState,
         filtered: data.filtered,
         all_time: data.all_time || prevState.all_time,
       }));
-      console.log(data.filtered);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
@@ -48,15 +55,22 @@ const Account = () => {
     fetchData();
   }, []);
 
-  const handleSelectProgress = (e, numberOfGames) => {
+  const handleSelectProgress = (e, numberOfGames, filterLabel) => {
     e.preventDefault();
     fetchData(numberOfGames);
+    setPrgCurrentFilter(filterLabel);
   };
 
-  const handleSelectPlot = (e, filterType) => {
+  const handleSelectPlot = (e, filterType, filterLabel) => {
     e.preventDefault();
     setEventFilter(filterType);
+    setPlotCurrentFilter(filterLabel);
   };
+
+  const filteredEvents = eventFilter
+  ? matchEvents.filter(event => event.event_type.toLowerCase() === eventFilter.toLowerCase())
+  : matchEvents;
+
 
   const calculatePercentage = (value, total) => {
     if (total > 0) {
@@ -69,7 +83,7 @@ const Account = () => {
     
     <div className="container-fluid">
       <div className="d-sm-flex align-items-center justify-content-between mb-4" style={{ paddingTop: '15px' }}>
-        <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
+        <h1 className="h3 mb-0 text-gray-800">Dashboard - {userName.first_name} {userName.last_name}</h1>
         <Link to="#" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
           className="fas fa-download fa-sm text-white-50"></i> Download Statistics </Link>
       </div>
@@ -159,29 +173,66 @@ const Account = () => {
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 className="m-0 font-weight-bold text-primary">
-              All Time Shot Distribution <span className="info-icon">
+              All Time Event Distribution <span className="info-icon">
                 <i className="fa-solid fa-circle-info fa-sm "></i>
                 <span className="info-text">Data across all games, translated to shooting in the one direction (Left)</span>
               </span>
             </h6>
-              <Dropdown>
-                <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
-                  <i className="fas fa-ellipsis-v fa-sm text-white-50"></i>
-                </Dropdown.Toggle>
+            <div className='row'>
+              <div className="col">
+                <Dropdown>
+                  <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
+                    Team
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'goal')}>Goals</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'point')}>Points</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'miss')}>Missed</Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item onClick={(e) => handleSelectPlot(e, '')}>Everything</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+                  <Dropdown.Menu>
+                    <Dropdown.Item>Team 1</Dropdown.Item>
+                    <Dropdown.Item>Team 2</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item>Default</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+
+              <div className="col">
+                <Dropdown>
+                  <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
+                    Match
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item>23rd March</Dropdown.Item>
+                    <Dropdown.Item>4th April</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item>Latest</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+
+              <div className="col">
+                <Dropdown>
+                  <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
+                    {currentPlotFilter}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'goal', 'Goals  ')}>Goals</Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'point', 'Points  ')}>Points</Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'miss', 'Missed  ')}>Missed</Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'block', 'Blocks  ')}>Blocks</Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => handleSelectPlot(e, 'foul', 'Fouls  ')}>Foul</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={(e) => handleSelectPlot(e, '', 'Everything  ')}>Everything</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
             </div>
+
+              </div>
 
             <div className="card-body">
               {/* <div className="chart-area"> */}
-                <PitchCanvas filter={eventFilter}  filteredEvents={dashboardData.filtered} />
+                <PitchCanvas events={filteredEvents} />
                 {/* <canvas id="myAreaChart"></canvas> */}
               {/* </div> */}
             </div>
@@ -194,21 +245,21 @@ const Account = () => {
               <h6 className="m-0 font-weight-bold text-primary"> Shot Outcomes </h6>
               <Dropdown>
                 <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
-                  <i className="fas fa-ellipsis-v fa-sm text-white-50"></i>
+                  {currentPrgFilter}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '1')}>Previous Game</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '5')}>Previous 5 Games</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '10')}>Previous 10 Games</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '1', 'Previous Game', 'Previous Game  ')}>Previous Game</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '5', 'Previous 5 Games', 'Previous 5 Games  ')}>Previous 5 Games</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '10', 'Previous 10 Games', 'Previous 10 Games  ')}>Previous 10 Games</Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '')}>All Time</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => handleSelectProgress(e, '', 'All Time  ')}>All Time</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </div>
 
             <div className="card-body">
-                <h4 className="small font-weight-bold">Goal<span className="float-right">
+                <h4 className="small font-weight-bold">Goals ({dashboardData.filtered.goals})<span className="float-right">
                     {calculatePercentage(dashboardData.filtered.goals, dashboardData.filtered.total_shots)}</span></h4>
                 <div className="progress mb-4">
                     <div className="progress-bar bg-success" role="progressbar" 
@@ -216,7 +267,7 @@ const Account = () => {
                     aria-valuenow={calculatePercentage(dashboardData.filtered.goals, dashboardData.filtered.total_shots)}
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <h4 className="small font-weight-bold">Point<span className="float-right">
+                <h4 className="small font-weight-bold">Points ({dashboardData.filtered.points})<span className="float-right">
                     {calculatePercentage(dashboardData.filtered.points, dashboardData.filtered.total_shots)}</span></h4>
                 <div className="progress mb-4">
                     <div className="progress-bar bg-warning" role="progressbar" 
@@ -225,7 +276,7 @@ const Account = () => {
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
 
-                <h4 className="small font-weight-bold">Miss<span className="float-right">
+                <h4 className="small font-weight-bold">Misses ({dashboardData.filtered.misses})<span className="float-right">
                     {calculatePercentage(dashboardData.filtered.misses, dashboardData.filtered.total_shots)}</span></h4>
                 <div className="progress mb-4">
                     <div className="progress-bar bg-danger" role="progressbar" 
@@ -245,7 +296,7 @@ const Account = () => {
                       <div className="text-s font-weight-bold text-primary text-camelcase mb-1" style={{paddingLeft: '15px'}}>My Games</div>
                     </div>
                     <div className="button-group w-100 h-100" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px' }}>
-                    <Link to="/games" className="btn btn-primary btn-icon-split">
+                    <Link to="/pastgames" className="btn btn-primary btn-icon-split">
                         <span className="text">View My Games</span>
                       </Link>
                     </div>

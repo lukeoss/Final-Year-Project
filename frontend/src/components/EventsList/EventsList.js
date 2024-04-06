@@ -27,7 +27,7 @@ function EventsListItem({ event, onFlag, onDelete, onUndo, isPendingDelete, coun
       <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onFlag(event.dbId)}>Flag</Button>
       <Button variant="primary" className="my-1" style={{ marginRight: '10px' }} onClick={() => onDelete(event.dbId)}>Delete</Button>
       <Button variant="primary" className="my-1" >Edit</Button>
-      <hr class="solid"></hr>
+      <hr className="solid"></hr>
     </div>
   );
 }

@@ -27,7 +27,7 @@ const StageGame = () => {
 
                 {/* View Games Card */}
                 <div className="col-sm-6 col-xl-6" style={{ marginBottom: '25px' }}>
-                    <Link to="/games" className="card shadow text-decoration-none" style={{ borderRadius: '15px', overflow: 'hidden', position: 'relative' }}>
+                    <Link to="/pastgames" className="card shadow text-decoration-none" style={{ borderRadius: '15px', overflow: 'hidden', position: 'relative' }}>
                         <img src={viewGameImg} alt="View past games" style={{ width: '100%', height: 'auto', borderRadius: '15px' }} />
                         <div className="position-absolute">
                             <div className="btn btn-lg text-white bg-black" aria-label="View past games">
