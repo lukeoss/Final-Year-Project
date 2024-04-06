@@ -1,3 +1,4 @@
 .Dockerfile
 .dockerignore
 venv
+django_hstat/django_hstat/local_settings.py
