@@ -1,7 +1,29 @@
-frontend/node_modules
+# Global ignores
+certs/
+*.log
+.DS_Store
+
+# Frontend specific ignores
+frontend/node_modules/
 frontend/.env.local
-backend/venv
+frontend/build/
+frontend/Dockerfile
+
+# Backend specific ignores
+backend/venv/
 backend/django_hstat/.env
 backend/django_hstat/local_settings.py
-certs
+backend/.Dockerfile
+backend/.dockerignore
+backend/certs
+backend/frontend/
 
+# Additional patterns for convenience
+# Ignore Python compiled files and directories
+*.pyc
+__pycache__/
+
+# Node specific ignores globally (if you have Node-related files outside the frontend folder)
+node_modules/
+npm-debug.log
+yarn-error.log
