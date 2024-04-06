@@ -3,6 +3,8 @@ import json
 import logging
 
 # Django imports
+from django.utils.dateformat import DateFormat
+from django.utils.formats import get_format
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -16,15 +18,16 @@ from django.views.decorators.http import require_http_methods
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.generics import RetrieveAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
 # Local imports
 from .models import Team, Player, Match, MatchEvent
-from .serializers import TeamSerializer, PlayerSerializer, MatchSerializer, MatchEventSerializer
+from .serializers import MatchEventDetailSerializer, PlayerDetailSerializer, TeamSerializer, PlayerSerializer, MatchSerializer, MatchEventSerializer
 
 # Class-based views       
 class CookieTokenObtainPairView(TokenObtainPairView):
@@ -99,15 +102,38 @@ class MatchViewSet(viewsets.ModelViewSet):
 
 class MatchEventViewSet(viewsets.ModelViewSet):
     queryset = MatchEvent.objects.none()
-    serializer_class = MatchEventSerializer
+    # serializer_class = MatchEventSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_serializer_class(self):
+        if self.request.query_params.get('detail') == 'true':
+            return MatchEventDetailSerializer
+        return MatchEventSerializer
 
     def get_queryset(self):
         return MatchEvent.objects.filter(match__user=self.request.user)
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+        
+    @action(detail=False, methods=['get'], url_path='(?P<game_id>\d+)')
+    def game_events(self, request, game_id=None):
+        if game_id is not None:
+            events = self.get_queryset().filter(match_id=game_id)
+            serializer = self.get_serializer(events, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
+class PlayerDetailView(RetrieveAPIView):
+    queryset = Player.objects.all()
+    serializer_class = PlayerDetailSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Player.objects.filter(matchevent__match__user=self.request.user).distinct().prefetch_related('matchevent_set', 'matchevent_set__match')
+
+        
 # Function-based views
 def hello(request):
     return HttpResponse("Hello, World!")
@@ -138,21 +164,24 @@ def create_account(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-@login_required
-def get_user_info(request):
-    user_data = {
-        "first_name": request.user.first_name,
-        "last_name": request.user.last_name,
-        "email": request.user.email,
-    }
-    return JsonResponse(user_data)
-
 @api_view(['POST'])
 def logout_view(request):
     response = Response({"detail": "Successfully logged out."})
     response.delete_cookie('access')
     response.delete_cookie('refresh')
     return response
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_name_view(request):
+    user = request.user
+    
+    user_data = {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
+    
+    return Response(user_data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -172,7 +201,6 @@ def dashboard_data_view(request, numberoflatestgames=None):
 
     filtered_events_query = MatchEvent.objects.filter(match_id__in=match_ids)
     
-    # Calculate stats for filtered events
     filtered_event_counts = filtered_events_query.aggregate(
         goals=Count(Case(When(event_type='goal', then=1), output_field=IntegerField())),
         points=Count(Case(When(event_type='point', then=1), output_field=IntegerField())),
@@ -184,8 +212,11 @@ def dashboard_data_view(request, numberoflatestgames=None):
     filtered_games_count = len(match_ids)
     filtered_successful_shots_percentage = (filtered_event_counts['goals'] + filtered_event_counts['points']) / filtered_total_shots * 100 if filtered_total_shots > 0 else 0
 
-    # Always calculate all-time stats
-    all_time_event_counts = MatchEvent.objects.aggregate(
+    all_matches_query = Match.objects.filter(user=user)
+    all_match_ids = list(all_matches_query.values_list('id', flat=True))
+    all_events_query = MatchEvent.objects.filter(match_id__in=all_match_ids)
+
+    all_time_event_counts = all_events_query.aggregate(
         goals=Count(Case(When(event_type='goal', then=1), output_field=IntegerField())),
         points=Count(Case(When(event_type='point', then=1), output_field=IntegerField())),
         misses=Count(Case(When(event_type='miss', then=1), output_field=IntegerField())),
@@ -193,7 +224,7 @@ def dashboard_data_view(request, numberoflatestgames=None):
     )
 
     all_time_total_shots = all_time_event_counts['goals'] + all_time_event_counts['points'] + all_time_event_counts['misses']
-    all_time_games_count = Match.objects.count()
+    all_time_games_count = all_matches_query.count()
     all_time_successful_shots_percentage = (all_time_event_counts['goals'] + all_time_event_counts['points']) / all_time_total_shots * 100 if all_time_total_shots > 0 else 0
     
     return Response({
@@ -216,3 +247,20 @@ def dashboard_data_view(request, numberoflatestgames=None):
             'blocks': all_time_event_counts['blocks'],
         }
     })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def past_games_view(request):
+    user = request.user
+    matches = Match.objects.filter(user=user).order_by('-date').select_related('home_team')
+
+    formatted_matches = []
+    for match in matches:
+        formatted_date = DateFormat(match.date).format('jS F Y')
+        formatted_matches.append({
+            'id': match.id,
+            'team_name': match.home_team.team_name,
+            'formatted_date': formatted_date
+        })
+
+    return Response(formatted_matches)

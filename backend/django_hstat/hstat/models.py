@@ -16,11 +16,7 @@ class Player(models.Model):
     player_number = models.IntegerField()
     player_team = models.ForeignKey(Team, related_name='players', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='players', on_delete=models.CASCADE)
-
-    def total_shots_taken(self):
-        shot_events = self.events.filter(Q(event_type='goal') | Q(event_type='point') | Q(event_type='miss')).count()
-        return shot_events
-
+    
     def __str__(self):
         return f"{self.player_first_name} {self.player_last_name}"
 

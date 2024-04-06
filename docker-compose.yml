@@ -10,27 +10,32 @@ services:
       MYSQL_DATABASE: hurlingstat_db
       MYSQL_USER: django
       MYSQL_PASSWORD: q98#946,nFwC$~Oxhc@
-    #ports:
-    #  - "3306:3306"  # Optional: Expose MySQL to the host machine on port 3306
 
   backend:
     build: ./backend
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mysql://django:q98#946,nFwC$~Oxhc@@db/hurlingstat_db
+      - DJANGO_SETTINGS_MODULE=django_hstat.settings
     depends_on:
       - db
 
   frontend:
     build: ./frontend
-    ports:
-      - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm start
 
 volumes:
   mysql_data:
