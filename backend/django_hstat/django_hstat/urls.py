@@ -1,11 +1,8 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.views.generic import TemplateView
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView
-)
+from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView, TokenVerifyView
 from hstat import views
 
 router = DefaultRouter()
@@ -27,4 +24,6 @@ urlpatterns = [
     path('api/token/refresh/', views.CookieTokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/logout/', views.logout_view, name='logout'),
+    
+    re_path('.*', TemplateView.as_view(template_name='index.html')),
 ]
