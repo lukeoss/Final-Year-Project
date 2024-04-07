@@ -28,18 +28,18 @@ DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
-CORS_ALLOWED_ORIGINS = [
-    'https://gaastat-frontend-5ab248e0e67f.herokuapp.com',
-]
-
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CORS_ALLOW_CREDENTIALS = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# cors_origins_raw = env.str("CORS_ALLOWED_ORIGINS", default="")
-# CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()]
+cors_origins_raw = env.str("CORS_ALLOWED_ORIGINS", default="")
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()]
+
+DATABASES = {
+    'default': dj_database_url.parse(env('JAWSDB_URL'))
+}
 
 # Application definition
 INSTALLED_APPS = [
@@ -57,9 +57,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,11 +124,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Security settings
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
 # Rest Framework & Authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -146,16 +141,8 @@ SIMPLE_JWT = {
 
 JWT_AUTH_COOKIE = 'access'
 
-
-
 # local_settings.py
 try:
     from .local_settings import *
 except ImportError:
-    # Database
-    # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-    DATABASES = {
-        'default': dj_database_url.parse(env('JAWSDB_URL'))
-    }
-
     pass
