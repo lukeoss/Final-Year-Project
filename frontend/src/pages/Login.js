@@ -28,7 +28,6 @@ export default function SignIn() {
     event.preventDefault();
     try {
       await login(email, password);
-      console.log("Login Successful");
       setUserLoggedIn();
       navigate('/Home');
     } catch (error) {

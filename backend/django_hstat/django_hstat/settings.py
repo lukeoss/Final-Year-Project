@@ -22,7 +22,7 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJANGO_SECRET_KEY')
-
+print(os.getcwd())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
@@ -41,10 +41,10 @@ DATABASES = {
     'default': dj_database_url.config(default=env('JAWSDB_URL'), conn_max_age=600, ssl_require=True)
 }
 
-
 # Application definition
 INSTALLED_APPS = [
     'corsheaders',
+    'hstat.apps.HstatConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,12 +54,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'sslserver',
-    'hstat.apps.HstatConfig',
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -148,5 +147,7 @@ JWT_AUTH_COOKIE = 'access'
 # local_settings.py
 try:
     from .local_settings import *
+    print("Gotcha")
 except ImportError:
     pass
+

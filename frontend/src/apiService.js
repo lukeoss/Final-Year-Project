@@ -95,7 +95,6 @@ export const createMatch = async (home_team_id, away_team_id, location, competit
 export const deleteMatchEventDB = async (id) => {
   try {
     await API.delete(`match-events/${id}/`);
-    console.log('Event deleted successfully:', id);
   } catch (error) {
     console.error('Error deleting match event:', error);
     throw error;

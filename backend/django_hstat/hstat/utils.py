@@ -1,5 +1,5 @@
 # utils.py
-from .models import Player, MatchEvent
+from hstat.models import Player, MatchEvent
 
 def get_player_statistics(player_id):
     player = Player.objects.get(id=player_id)

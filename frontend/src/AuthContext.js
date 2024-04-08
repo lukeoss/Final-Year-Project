@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.ok) {
-        console.log("Logout Successful");
         document.cookie = 'access=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         document.cookie = 'refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         setIsLoggedIn(false);

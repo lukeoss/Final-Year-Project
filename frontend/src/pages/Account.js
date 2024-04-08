@@ -179,7 +179,7 @@ const Account = () => {
               </span>
             </h6>
             <div className='row'>
-              <div className="col">
+              {/* <div className="col">
                 <Dropdown>
                   <Dropdown.Toggle variant="primary" id="dropdown-basic" className="btn btn-sm shadow-sm">
                     Team
@@ -207,7 +207,7 @@ const Account = () => {
                     <Dropdown.Item>Latest</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-              </div>
+              </div> */}
 
               <div className="col">
                 <Dropdown>

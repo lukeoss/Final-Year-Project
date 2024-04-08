@@ -1,18 +1,29 @@
-# Use the specified Python image
-FROM python:3.10.11
+FROM python:3.10-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Install any needed packages specified in requirements.txt
-COPY requirements.txt /app/
+WORKDIR /code 
+
+# Install system dependencies for mysqlclient
+RUN apt-get update && apt-get install -y \
+    gcc \
+    default-libmysqlclient-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /code/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the current directory contents into the container 
+COPY ./django_hstat /code 
 
-# Make port 8000 available to the world outside this container
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+# Expose the port the app runs on
 EXPOSE 8000
 
-# Run the Django app
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "django_hstat.wsgi:application"]
+# Command to run the application
+CMD gunicorn django_hstat.wsgi:application --bind 0.0.0.0:$PORT

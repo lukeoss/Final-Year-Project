@@ -53,8 +53,6 @@ function Game() {
         match: selectedMatchId,
         player: playerId,
       });
-
-      console.log(savedEvent.id)
       addEvent({ ...createEvent(action, player, savedEvent.id, markerPosition), dbId: savedEvent.id });
       // addEvent({ ...createEvent(action, player, markerPosition), dbId: savedEvent.id });  
 

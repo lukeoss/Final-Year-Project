@@ -1,0 +1,123 @@
+Folder PATH listing for volume Blade 15 SSD
+Volume serial number is 20E0-0F32
+django_hstat:.
+¦   .env
+¦   db.sqlite3
+¦   manage.py
+¦   tree.txt
+¦   wait_for_db.py
+¦   
++---django_hstat
+¦   ¦   asgi.py
+¦   ¦   local_settings.py
+¦   ¦   settings.py
+¦   ¦   urls.py
+¦   ¦   wsgi.py
+¦   ¦   __init__.py
+¦   ¦   
+¦   +---build
+¦   ¦   ¦   asset-manifest.json
+¦   ¦   ¦   flavicon.png
+¦   ¦   ¦   index.html
+¦   ¦   ¦   manifest.json
+¦   ¦   ¦   robots.txt
+¦   ¦   ¦   
+¦   ¦   +---static
+¦   ¦       +---css
+¦   ¦       ¦       main.25b48c4c.css
+¦   ¦       ¦       main.25b48c4c.css.map
+¦   ¦       ¦       
+¦   ¦       +---js
+¦   ¦       ¦       453.8ab44547.chunk.js
+¦   ¦       ¦       453.8ab44547.chunk.js.map
+¦   ¦       ¦       main.dc47258c.js
+¦   ¦       ¦       main.dc47258c.js.LICENSE.txt
+¦   ¦       ¦       main.dc47258c.js.map
+¦   ¦       ¦       
+¦   ¦       +---media
+¦   ¦               ball_in_ski.8c0fb080f52f16a1f81e.jpg
+¦   ¦               block_icon.6658ad9be43377abf384.png
+¦   ¦               fa-brands-400.6205fd00fb1b573e9f0f.ttf
+¦   ¦               fa-brands-400.8d3cabfc66809162fb4d.woff2
+¦   ¦               fa-regular-400.adc51aab4d771ab65f81.ttf
+¦   ¦               fa-regular-400.e931bc0d14f5bbb1da22.woff2
+¦   ¦               fa-solid-900.45a265d0f07b31cde85f.ttf
+¦   ¦               fa-solid-900.fb8184add5a3101ad0a3.woff2
+¦   ¦               fa-v4compatibility.2eb7b3ef25042305f3ff.ttf
+¦   ¦               fa-v4compatibility.b3049b13a93f07e026fc.woff2
+¦   ¦               Facon.34bfdb005b469eed81f1.ttf
+¦   ¦               Facon.4a6ea1c610b2966e0cbf.woff
+¦   ¦               Facon.c120114ec0d969c3176a.woff2
+¦   ¦               foul_icon.61ac0c91be14b50f9cd9.png
+¦   ¦               goal_icon.f7317dabcbcfb3ddd9d7.png
+¦   ¦               pitch_blacklines.c02532262040e8c29687.jpg
+¦   ¦               Pitch_image.7b08a5acf4d5a387a953.png
+¦   ¦               stadium_corner.fe063d0b782f89391ba9.jpg
+¦   ¦               
+¦   +---__pycache__
+¦           local_settings.cpython-310.pyc
+¦           local_settings.cpython-312.pyc
+¦           settings.cpython-310.pyc
+¦           settings.cpython-312.pyc
+¦           urls.cpython-310.pyc
+¦           urls.cpython-312.pyc
+¦           wsgi.cpython-310.pyc
+¦           wsgi.cpython-312.pyc
+¦           __init__.cpython-310.pyc
+¦           __init__.cpython-312.pyc
+¦           
++---hstat
+    ¦   admin.py
+    ¦   apps.py
+    ¦   authentication.py
+    ¦   models.py
+    ¦   routing.py
+    ¦   serializers.py
+    ¦   signals.py
+    ¦   tests.py
+    ¦   utils.py
+    ¦   views.py
+    ¦   __init__.py
+    ¦   
+    +---migrations
+    ¦   ¦   0001_initial.py
+    ¦   ¦   0002_match_matchevent_player_team_delete_useraccount_and_more.py
+    ¦   ¦   0003_alter_match_id.py
+    ¦   ¦   __init__.py
+    ¦   ¦   
+    ¦   +---__pycache__
+    ¦           0001_initial.cpython-310.pyc
+    ¦           0001_initial.cpython-312.pyc
+    ¦           0002_match_matchevent_player_team_delete_useraccount_and_more.cpython-310.pyc
+    ¦           0002_match_matchevent_player_team_delete_useraccount_and_more.cpython-312.pyc
+    ¦           0002_team_player.cpython-310.pyc
+    ¦           0003_alter_match_id.cpython-310.pyc
+    ¦           0003_alter_match_id.cpython-312.pyc
+    ¦           0003_rename_player_players_rename_team_teams.cpython-310.pyc
+    ¦           0004_team_player_delete_players_delete_teams.cpython-310.pyc
+    ¦           0005_rename_player_team_player_player_team_id.cpython-310.pyc
+    ¦           0006_rename_player_team_id_player_player_team.cpython-310.pyc
+    ¦           0007_match_matchevent.cpython-310.pyc
+    ¦           0008_alter_match_date.cpython-310.pyc
+    ¦           0009_delete_useraccount_rename_match_id_match_id_and_more.cpython-310.pyc
+    ¦           __init__.cpython-310.pyc
+    ¦           __init__.cpython-312.pyc
+    ¦           
+    +---__pycache__
+            admin.cpython-310.pyc
+            admin.cpython-312.pyc
+            apps.cpython-310.pyc
+            apps.cpython-312.pyc
+            authentication.cpython-310.pyc
+            authentication.cpython-312.pyc
+            models.cpython-310.pyc
+            models.cpython-312.pyc
+            serializers.cpython-310.pyc
+            serializers.cpython-312.pyc
+            signals.cpython-310.pyc
+            signals.cpython-312.pyc
+            views.cpython-310.pyc
+            views.cpython-312.pyc
+            __init__.cpython-310.pyc
+            __init__.cpython-312.pyc
+            

@@ -26,8 +26,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
 # Local imports
-from .models import Team, Player, Match, MatchEvent
-from .serializers import MatchEventDetailSerializer, PlayerDetailSerializer, TeamSerializer, PlayerSerializer, MatchSerializer, MatchEventSerializer
+from hstat.models import Team, Player, Match, MatchEvent
+from hstat.serializers import MatchEventDetailSerializer, PlayerDetailSerializer, TeamSerializer, PlayerSerializer, MatchSerializer, MatchEventSerializer
 
 # Class-based views       
 class CookieTokenObtainPairView(TokenObtainPairView):

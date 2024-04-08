@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Team, Player, Match, MatchEvent
+from hstat.models import Team, Player, Match, MatchEvent
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
