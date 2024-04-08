@@ -26,7 +26,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0'])
 
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
@@ -38,8 +38,9 @@ cors_origins_raw = env.str("CORS_ALLOWED_ORIGINS", default="")
 CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()]
 
 DATABASES = {
-    'default': dj_database_url.parse(env('JAWSDB_URL'))
+    'default': dj_database_url.config(default=env('JAWSDB_URL'), conn_max_age=600, ssl_require=True)
 }
+
 
 # Application definition
 INSTALLED_APPS = [
