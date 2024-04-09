@@ -50,5 +50,6 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "webpack-bundle-analyzer": "^4.10.1"
-  }
+  },
+  "resolutions": { "fs-capacitor": "3.0.0" }
 }
