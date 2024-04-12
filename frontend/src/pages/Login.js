@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext.js';
 import { login } from '../apiService.js';
 
-
 const defaultTheme = createTheme();
 
 export default function SignIn() {

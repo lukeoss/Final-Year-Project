@@ -10,9 +10,9 @@ import { createMatchEvent, deleteMatchEventDB } from '../apiService';
 function Game() {
   const location = useLocation();
   const selectedMatchId = location.state?.matchId;
-  const { team, selectedTeamId, selectedDirection } = useTeam();
+  const { team, selectedDirection } = useTeam();
   const [selectedAction, setSelectedAction] = useState(null);
-  const [selectedActionId, setSelectedActionId] = useState(null);
+  const [selectedActionId] = useState(null);
   const [isPitchClickable, setIsPitchClickable] = useState(false);
   const [events, setEvents] = useState([]);
   const [pendingDeletes, setPendingDeletes] = useState([]);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import PitchCanvas from '../components/PlotPitch/PitchCanvas.js';
+import MatchComparison from '../components/GameProfile/CompareGames.js';
 import { fetchDashboardData, fetchUserName, fetchMatchEvents } from '../apiService.js';
 import './Additional.css';
 import './Account.css';
@@ -321,12 +322,17 @@ const Account = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>  
+
+          
+          
+          
 
 
 
         </div>
-      </div>
+        <MatchComparison/>
+        </div>
     </div>
   );
 }

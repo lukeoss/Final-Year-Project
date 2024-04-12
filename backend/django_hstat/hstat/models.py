@@ -1,6 +1,5 @@
 # models.py
 from django.db import models
-from django.db.models import Q
 from django.contrib.auth.models import User
 
 class Team(models.Model):
@@ -21,7 +20,6 @@ class Player(models.Model):
         return f"{self.player_first_name} {self.player_last_name}"
 
 class Match(models.Model):
-    # id = models.AutoField(primary_key=True)
     date = models.DateTimeField()
     home_team = models.ForeignKey(Team, related_name='home_matches', on_delete=models.CASCADE)
     away_team = models.ForeignKey(Team, related_name='away_matches', on_delete=models.CASCADE)

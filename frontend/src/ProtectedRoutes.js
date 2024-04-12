@@ -38,7 +38,7 @@ const ProtectedRoutes = () => {
             <Route path="/game" element={<ProtectedRoute><Game /></ProtectedRoute>} />
             <Route path="/newgame" element={<ProtectedRoute><NewGame /></ProtectedRoute>} />
             <Route path="/pastgames" element={<ProtectedRoute><PastGames/></ProtectedRoute>} />
-            <Route path="/stagegames" element={isLoggedIn ? <StageGame /> : <Navigate to="/login" />} />
+            <Route path="/stagegames" element={<ProtectedRoute><StageGame /></ProtectedRoute>} />
             <Route path="/teams" element={<ProtectedRoute><Teams /></ProtectedRoute>} />
             <Route path="/playerprofile/:playerId" element={<ProtectedRoute><PlayerProfile/></ProtectedRoute>} />
             <Route path="/gameprofile/:gameId" element={<ProtectedRoute><GameProfile/></ProtectedRoute>} />

@@ -1,6 +1,5 @@
 // apiService.js
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const apiBaseURL = process.env.REACT_APP_API_BASE_URL;
 
@@ -11,29 +10,58 @@ const API = axios.create({
 
 API.interceptors.response.use(
   response => response,
-  async error => {
-    const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const response = await fetch(`${apiBaseURL}token/refresh/`, {
-          method: 'POST',
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          Cookies.set('access', data.access);
-          API.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-          return API(originalRequest);
-        }
-      } catch (refreshError) {
-        console.error('Error refreshing token:', refreshError);
-      }
-    }
-    return Promise.reject(error);
-  }
+  error => handleResponseError(error)
 );
 
+const handleResponseError = async (error) => {
+  const originalRequest = error.config;
+  if (error.response?.status === 401 && !originalRequest._retry) {
+    originalRequest._retry = true;
+    try {
+      const response = await fetch(`${apiBaseURL}token/refresh/`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        API.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
+        return API(originalRequest);
+      }
+    } catch (refreshError) {
+      console.error('Error refreshing token:', refreshError);
+    }
+  }
+  return Promise.reject(error);
+};
+
+export const login = async (email, password) => {
+  try {
+    const response = await API.post('token/', { username: email, password: password });
+    return response.data;
+  } catch (error) {
+    throw error.response || error;
+  }
+};
+
+export const logout = async () => {
+  try {
+    const response = await API.post('logout/', {});
+    return response.status === 200;
+  } catch (error) {
+    console.error('Logout failed:', error);
+    return false;
+  }
+};
+
+export const refreshAccessToken = async () => {
+  try {
+    const response = await API.post('token/refresh/', {});
+    return response.status === 200;
+  } catch (error) {
+    console.error('Error refreshing access token:', error);
+    return false;
+  }
+};
 
 export const checkEmailExists = async (email) => {
   try {
@@ -56,6 +84,26 @@ export const createAccount = async (firstName, lastName, email, password) => {
     return response.data;
   } catch (error) {
     console.error('Error creating account:', error);
+    throw error;
+  }
+};
+
+export const fetchUserName = async () => {
+  try {
+    const response = await API.get(`user-name/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users name:', error);
+    throw error;
+  }
+};
+
+export const fetchPlayer = async (playerId) => {
+  try {
+    const response = await API.get(`player/${playerId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching player details:', error);
     throw error;
   }
 };
@@ -101,16 +149,7 @@ export const deleteMatchEventDB = async (id) => {
   }
 };
 
-// export const getMatchEvents = async (matchId) => {
-//   try {
-//     const response = await API.get(`match-events/${matchId}/`);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error getting match events:', error);
-//     throw error;
-//   }
-// };
-
+// This is for the game component
 export const getMatchEvents = async (matchId = '', detail = false) => {
   const detailQuery = detail ? '?detail=true' : '';
   const endpoint = matchId ? `match-events/${matchId}/${detailQuery}` : `match-events/${detailQuery}`;
@@ -128,29 +167,6 @@ export const getMatchEvents = async (matchId = '', detail = false) => {
   }
 };
 
-
-export const login = async (email, password) => {
-  try {
-    const response = await API.post('token/', {
-      username: email,
-      password: password,
-    }, { withCredentials: true });
-    return response.data;
-  } catch (error) {
-    throw error.response || error;
-  }
-};
-
-export const fetchDashboardData = async (numberoflatestgames = '') => {
-  const endpoint = numberoflatestgames ? `dashboard-data/${numberoflatestgames}/` : 'dashboard-data/';
-  try {
-    const response = await API.get(endpoint);
-    return response.data;
-  } catch (error) {
-    throw error.response ? error.response.data : new Error('An unknown error occurred');
-  }
-};
-
 // This fetches all events and is for the dashboard
 export const fetchMatchEvents = async () => {
   try {
@@ -160,6 +176,26 @@ export const fetchMatchEvents = async () => {
         'Content-Type': 'application/json',
       },
     });
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error('An unknown error occurred');
+  }
+};
+
+export const fetchMatchDetails = async (matchId) => {
+  try {
+    const response = await API.get(`matches/${matchId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching match details:', error);
+    throw error;
+  }
+};
+
+export const fetchDashboardData = async (numberoflatestgames = '') => {
+  const endpoint = numberoflatestgames ? `dashboard-data/${numberoflatestgames}/` : 'dashboard-data/';
+  try {
+    const response = await API.get(endpoint);
     return response.data;
   } catch (error) {
     throw error.response ? error.response.data : new Error('An unknown error occurred');
@@ -186,32 +222,18 @@ export const fetchPastGames = async () => {
   }
 };
 
-export const fetchMatchDetails = async (matchId) => {
+export const compareMatchEvents = async (matchIdFirst, matchIdSecond) => {
   try {
-    const response = await API.get(`matches/${matchId}/`);
+    const url = `compare-matches/${matchIdFirst}/${matchIdSecond}/`;
+    const response = await API.get(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching match details:', error);
-    throw error;
-  }
-};
-
-export const fetchUserName = async () => {
-  try {
-    const response = await API.get(`user-name/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching users name:', error);
-    throw error;
-  }
-};
-
-export const fetchPlayer = async (playerId) => {
-  try {
-    const response = await API.get(`player/${playerId}/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching player details:', error);
+    console.error('Error fetching compared games:', error);
     throw error;
   }
 };
