@@ -25,3 +25,7 @@ def wait_for_db():
 if __name__ == "__main__":
     wait_for_db()
     print("Database is available now.")
+
+
+# I needed this when I was uploading django, react, and an instance of mysql into their own database
+# I don't want to remove it... probably dont need it...

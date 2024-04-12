@@ -7,5 +7,4 @@ def get_player_statistics(player_id):
 
     return {
         "total_shots": total_shots,
-        # Add more statistics as needed
     }

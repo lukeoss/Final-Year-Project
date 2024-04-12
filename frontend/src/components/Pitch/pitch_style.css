@@ -7,7 +7,6 @@
     opacity: 1;
 }
 
-
 .pitch {
     background-color: #64976c;
     height: 416px;
@@ -199,10 +198,10 @@
   
 .flex-grow-button {
     flex-grow: 1;
-    margin: 0; /* Removing any default margin */
+    margin: 0; /* overwrite and remove any default margin */
     display: flex;
-    align-items: center; /* This will vertically center the text inside the button */
-    justify-content: center; /* This will horizontally center the text */
+    align-items: center;
+    justify-content: center;
 }
 
 .blur-effect {

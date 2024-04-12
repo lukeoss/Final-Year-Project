@@ -13,7 +13,6 @@ const StageGame = () => {
             </div>
 
             <div className="row" style={{ padding: '0 50px'}}>
-                {/* Start Game Card */}
                 <div className="col-sm-6 col-xl-6" style={{ marginBottom: '25px' }}>
                     <Link to="/newgame" className="card shadow text-decoration-none" style={{ borderRadius: '15px', overflow: 'hidden', position: 'relative' }}>
                         <img src={startGameImg} loading="lazy" alt="Start a new game" style={{ width: '100%', height: 'auto', borderRadius: '15px' }} />
@@ -25,7 +24,6 @@ const StageGame = () => {
                     </Link>
                 </div>
 
-                {/* View Games Card */}
                 <div className="col-sm-6 col-xl-6" style={{ marginBottom: '25px' }}>
                     <Link to="/pastgames" className="card shadow text-decoration-none" style={{ borderRadius: '15px', overflow: 'hidden', position: 'relative' }}>
                         <img src={viewGameImg} loading="lazy" alt="View past games" style={{ width: '100%', height: 'auto', borderRadius: '15px' }} />

@@ -45,7 +45,6 @@ const ProtectedRoutes = () => {
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <Login />} />
-            {/* Placeholder for implementing protected routes or conditional rendering based on auth status */}
             <Route path="*" element={<Home />} /> {/* Handles unknown paths */}
         </Routes>
     );

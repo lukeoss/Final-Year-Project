@@ -8,7 +8,7 @@ import './Account.css';
 const Teams = () => {
   const { setTeam } = useTeam();
   const [teams, setTeams] = useState([]);
-  const [selectedTeamId, setSelectedTeamId] = useState(null); // New state to keep track of which team is being viewed
+  const [selectedTeamId, setSelectedTeamId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -89,7 +89,12 @@ const MatchComparison = () => {
             <p>Blocks: {eventsFirst.blocks}</p>
             <p>Fouls: {eventsFirst.fouls}</p>
           </div>
-          {/* Work in progress */}
+          {/* Work in progress 
+          I want to have a progress bar that starts from the middle
+          and moves left or right based on the differences
+          I dont know if I should do this at all
+          and if I do
+          should it just show one bar at a time, or all of them*/}
           <div>
             <h5>Second Match Events</h5>
             <p>Goals: {eventsSecond.goals} ({eventsDiff.goals})</p>
